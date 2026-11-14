@@ -12,7 +12,7 @@ export default function App() {
   const [page, setPage] = useState<Page>('dashboard')
   const [courses, setCourses] = useState<Course[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [user, setUser] = useState<User>({ name: 'Jordan Lee', email: 'jordan.lee@example.edu' })
+  const [user, setUser] = useState<User>({ name: 'Jordan Lee', email: 'jordan.lee@example.edu', avatar: 'https://i.pravatar.cc/40?img=12' })
 
   useEffect(() => {
     setTimeout(() => {

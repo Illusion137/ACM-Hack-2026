@@ -38,6 +38,7 @@ export interface QuizInfo {
 export interface User {
   name: string
   email: string
+  avatar: string;
 }
 
 export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings'

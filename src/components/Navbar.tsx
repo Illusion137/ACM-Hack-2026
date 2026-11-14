@@ -16,7 +16,7 @@ export default function Navbar({ setPage, user }: NavbarProps) {
         <span className="nav-item" title="Config" onClick={() => setPage('settings')}>⚙️</span>
       </div>
       <div className="nav-user">
-        <img src="https://i.pravatar.cc/40?img=12" className="avatar" />
+        <img src={user.avatar} className="avatar" />
         <span>{user.name}</span>
       </div>
     </nav>
