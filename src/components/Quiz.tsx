@@ -268,7 +268,7 @@ interface PostQuizResultsHeaderProps {
 
 function PostQuizResultsHeader(props: PostQuizResultsHeaderProps) {
   const percent = props.total ? Math.round((props.score / props.total) * 100) : 0
-  const color = percent >= 70 ? '#0b874b' : percent >= 50 ? '#c66b00' : '#c62828'
+  const color = percent >= 70 ? 'var(--success)' : percent >= 50 ? 'var(--warning)' : 'var(--danger)'
 
   return (
     <>
@@ -278,7 +278,7 @@ function PostQuizResultsHeader(props: PostQuizResultsHeaderProps) {
         <CircularProgressbar
           value={percent}
           text={`${percent}%`}
-          styles={buildStyles({ pathColor: color, textColor: color, trailColor: '#e6e9eb' })}
+          styles={buildStyles({ pathColor: color, textColor: color, trailColor: 'var(--border-subtle)' })}
         />
       </div>
       <div>

@@ -34,16 +34,12 @@ const EMPTY_TEXT: Record<TodoTab, string> = {
   done: 'Nothing completed in this range.',
 }
 
-// rings sweep a semicircle plus 5deg past horizontal on each end (190deg)
 const SWEEP_DEG = 190
 const ARC = (SWEEP_DEG / 360) * 100 // in pathLength units
 const ARC_START_DEG = 180 - (SWEEP_DEG - 180) / 2
-// outer edge of the outermost ring, in viewBox units (1 unit = 1px at 200px wide)
 const OUTER_EDGE = 95
-// all rings together span this much of the radius, each ring filling most of its slot
 const RING_BAND = 56
 const RING_FILL = 0.87
-// geometry of a lone ring (focused course, or the course detail page)
 const SOLO_WIDTH = 50
 const SOLO_R = OUTER_EDGE - SOLO_WIDTH / 2
 
@@ -115,8 +111,8 @@ function buildItems(course: Course, color: string, planned: Set<string>): TodoIt
 }
 
 function Arc(props: { r: number; width: number; color: string; length: number; opacity?: number }) {
-  // geometry goes through style so CSS transitions can animate it
   const style = {
+    stroke: props.color,
     r: props.r,
     strokeWidth: props.width,
     strokeDasharray: `${props.length} 100`,
@@ -127,7 +123,6 @@ function Arc(props: { r: number; width: number; color: string; length: number; o
       cx={100}
       cy={100}
       fill="none"
-      stroke={props.color}
       strokeLinecap="round"
       pathLength={100}
       transform={`rotate(${ARC_START_DEG} 100 100)`}
@@ -157,16 +152,17 @@ function ProgressRings(props: { rings: RingData[]; focus: number | null; on_sele
         return (
           <g
             key={ring.id}
-            className={`todo-ring ${hidden ? 'hidden' : ''} ${selectable ? 'selectable' : ''}`}
+            className={`todo-ring course-color ${hidden ? 'hidden' : ''} ${selectable ? 'selectable' : ''}`}
+            style={{ '--course': ring.color } as CSSProperties}
             role={selectable ? 'button' : undefined}
             tabIndex={selectable && !hidden ? 0 : undefined}
             aria-label={selectable ? `${props.focus === ring.id ? 'Show all courses' : 'Focus course'} ${ring.label}` : undefined}
             onClick={selectable ? toggle : undefined}
             onKeyDown={selectable ? (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle() } } : undefined}
           >
-            <Arc r={r} width={width} color={ring.color} length={ARC} opacity={0.2} />
-            <Arc r={r} width={width} color={ring.color} length={(ring.done + ring.planned) * scale} opacity={0.5} />
-            <Arc r={r} width={width} color={ring.color} length={ring.done * scale} />
+            <Arc r={r} width={width} color="var(--course-mark)" length={ARC} opacity={0.2} />
+            <Arc r={r} width={width} color="var(--course-mark)" length={(ring.done + ring.planned) * scale} opacity={0.5} />
+            <Arc r={r} width={width} color="var(--course-mark)" length={ring.done * scale} />
           </g>
         )
       })}
@@ -192,9 +188,9 @@ function TodoCard(props: { item: TodoItem; on_toggle: () => void; on_open: () =>
   const late = !done && isPastDue(item.due)
 
   return (
-    <div className={`todo-item ${item.status}`} style={{ borderLeftColor: item.color }}>
+    <div className={`todo-item course-color ${item.status}`} style={{ '--course': item.color } as CSSProperties}>
       <button className="todo-item-body" onClick={props.on_open}>
-        <span className="todo-item-course" style={{ color: item.color }}>
+        <span className="todo-item-course">
           {item.course.code} · {item.course.title}
         </span>
         <span className="todo-item-title" title={item.title}>
@@ -208,7 +204,6 @@ function TodoCard(props: { item: TodoItem; on_toggle: () => void; on_open: () =>
       </button>
       <button
         className="todo-item-check"
-        style={{ color: item.color }}
         onClick={props.on_toggle}
         disabled={done}
         aria-label={done ? 'Completed' : item.status === 'planned' ? 'Move back to to-do' : 'Mark as will be completed'}
@@ -222,7 +217,6 @@ function TodoCard(props: { item: TodoItem; on_toggle: () => void; on_open: () =>
 
 interface TodoSidebarProps {
   courses: Course[]
-  // when set, the sidebar only shows this course
   course?: Course
   planned: Set<string>
   togglePlanned: (key: string) => void
@@ -240,7 +234,6 @@ export default function TodoSidebar({ courses, course, planned, togglePlanned, o
   const enrolled = courses.filter((c) => c.enrolled)
   const colorOf = (c: Course) => distinct_colors[Math.max(enrolled.findIndex((e) => e.id === c.id), 0) % distinct_colors.length]
   const shown = course ? [course] : enrolled
-  // only the dashboard can lock onto one course, and only while it's still shown
   const focus = !course && shown.some((c) => c.id === focus_id) ? focus_id : null
   const isVisible = (item: TodoItem) => focus === null || item.course.id === focus
   const items = shown.flatMap((c) => buildItems(c, colorOf(c), planned)).sort((a, b) => a.due - b.due)
@@ -251,7 +244,6 @@ export default function TodoSidebar({ courses, course, planned, togglePlanned, o
   const end = addDays(start, days)
 
   const in_range = items.filter((i) => i.due >= start && i.due < end)
-  // unfinished work from before the current range still needs doing
   const overdue = offset === 0 ? items.filter((i) => i.status !== 'done' && i.due < start) : []
   const lists: Record<TodoTab, TodoItem[]> = {
     todo: [...overdue, ...in_range].filter((i) => i.status === 'todo'),
@@ -315,8 +307,8 @@ export default function TodoSidebar({ courses, course, planned, togglePlanned, o
           <ul className="todo-legend">
             {course ? (
               <>
-                <li><span className="todo-dot" style={{ background: colorOf(course) }} />Completed</li>
-                <li><span className="todo-dot" style={{ background: colorOf(course), opacity: 0.5 }} />Planned</li>
+                <li><span className="todo-dot course-color" style={{ '--course': colorOf(course) } as CSSProperties} />Completed</li>
+                <li><span className="todo-dot course-color" style={{ '--course': colorOf(course), opacity: 0.5 } as CSSProperties} />Planned</li>
               </>
             ) : (
               <>
@@ -328,7 +320,7 @@ export default function TodoSidebar({ courses, course, planned, togglePlanned, o
                       aria-pressed={focus === c.id}
                       onClick={() => setFocus(focus === c.id ? null : c.id)}
                     >
-                      <span className="todo-dot" style={{ background: colorOf(c) }} />
+                      <span className="todo-dot course-color" style={{ '--course': colorOf(c) } as CSSProperties} />
                       {focus === c.id ? `${c.code} · ${c.title}` : c.code}
                     </button>
                   </li>

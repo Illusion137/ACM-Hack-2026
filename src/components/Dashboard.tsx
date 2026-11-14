@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { CSSProperties } from 'react'
 import { announcements, distinct_colors } from '../data'
 import type { Course, User } from '../types'
 import { calculateGrade, isPastDue, selectImage } from '../utils'
@@ -99,7 +100,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
               </span>
             </div>
             <div className="card-body">
-              <h3 style={{color: distinct_colors[i]}}>{c.title}</h3>
+              <h3 className="course-color" style={{ '--course': distinct_colors[i] } as CSSProperties}>{c.title}</h3>
               <p className="faint">Started {formatDate(c.startDate)}</p>
               <div className="bar">
                 <div className="bar-fill" style={{ width: getProgress(c) + '%' }} />
