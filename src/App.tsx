@@ -27,11 +27,18 @@ export default function App() {
     );
 
     const handlePopState = (event: PopStateEvent) => {
-      console.log(event)
+    
+      if (event.state?.page) {
+        console.log(event)
+        
+        if (window.location.hash.includes('-')) {
+          const id = Number(window.location.hash.split('-').pop())
+          setSelectedId(id)
+        }
+        
+        setPage(event.state.page);
 
-      if (event.state?.target) {
-        setPage(event.state.target);
-      } 
+      }
     };
 
     window.addEventListener('popstate', handlePopState);
@@ -43,7 +50,7 @@ export default function App() {
 
   const openCourse = (id: number) => {
     setSelectedId(id)
-    window.history.pushState({ target: 'detail' }, '', `#detail` )
+    window.history.pushState({ page: `detail` }, '', `#detail-${id}` )
     setPage('detail')
   }
 
@@ -51,13 +58,14 @@ export default function App() {
     if (page == target) {
       return
     }
-    window.history.pushState({ target }, '', `#${target}`);
+    window.history.pushState({ page: target }, '', `#${target}`);
     setPage(target);
   }
 
   
   const openQuiz = (id: number) => {
     setSelectedId(id)
+    window.history.pushState({ page: `quiz` }, '', `#quiz-${id}` )
     setPage('quiz')
   }
 
@@ -72,7 +80,7 @@ export default function App() {
           <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} />
         )}
         {page === 'detail' && selected && (
-          <CourseDetail course={selected} courses={courses} setCourses={setCourses} setPage={navigateTo} />
+          <CourseDetail course={selected} courses={courses} setCourses={setCourses} openQuiz={openQuiz} />
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
         {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}

@@ -6,10 +6,10 @@ interface CourseDetailProps {
   course: Course
   courses: Course[]
   setCourses: SetCourses
-  setPage: (page: Page) => void,
+  openQuiz: (id: number) => void,
 }
 
-export default function CourseDetail({ course, courses, setCourses, setPage }: CourseDetailProps) {
+export default function CourseDetail({ course, courses, setCourses, openQuiz }: CourseDetailProps) {
   const [hideDone, setHideDone] = useState(false)
   const nextUp = course.lessons.find((l) => !l.completed) || course.lessons[0]
 
@@ -48,7 +48,7 @@ export default function CourseDetail({ course, courses, setCourses, setPage }: C
         ))}
       </ul>
 
-      <button className="btn-c" onClick={() => setPage('quiz')}>Execute Assessment</button>
+      <button className="btn-c" onClick={() => openQuiz(course.id)}>Execute Assessment</button>
     </div>
   )
 }
