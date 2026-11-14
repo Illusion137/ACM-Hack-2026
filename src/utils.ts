@@ -32,7 +32,7 @@ export function calculateGrade(course: Course, now = Date.now()) {
 
     let standing: GradeStanding;
     if (percent >= 80) standing = "good";
-    else if (percent >= 60) standing = "okay";
+    else if (percent >= 69) standing = "okay";
     else standing = "poor";
 
     return { percent, standing, earned, possible, quiz_points, quiz_taken };
