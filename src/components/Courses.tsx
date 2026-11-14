@@ -21,7 +21,8 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
   )
 
   const on_click = (c: Course) => {
-    if(c.enrolled) openCourse(c.id)
+    if(c.enrolled) openCourse(c.id);
+    if(!c.enrolled) handleOpen();
   }
 
   const enroll = (course: Course) => {
@@ -94,7 +95,11 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
                 <button className="btn-b" onClick={() => enroll(c)}>Enroll</button>
               )}
             </div>
-            {open?(
+            </div>
+        ))}
+      </div>
+
+      {open?(
               <div
                 onClick={handleClose}
                 style={{
@@ -124,9 +129,6 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
               <h3>Enroll in the class to access course content!</h3>
             </div>
         </div>) : (null)}
-          </div>
-        ))}
-      </div>
     </div>
   )
 }
