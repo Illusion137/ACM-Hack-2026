@@ -4,7 +4,7 @@ import type { Course, User } from '../types'
 
 export function getProgress(course: Course): number {
   const done = course.lessons.filter((l) => l.completed).length
-  return Math.round((done / (course.lessons.length)) * 100)
+  return Math.round((done / (course.lessons.length )) * 100)
 }
 
 export function formatDate(ts: number): string {
@@ -15,6 +15,10 @@ export function formatDate(ts: number): string {
   ];
   const d = new Date(ts)
   return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear()
+}
+
+export function formatTime(time: number): string {
+  return new Date(time / 1000).toLocaleString()
 }
 
 interface DashboardProps {
