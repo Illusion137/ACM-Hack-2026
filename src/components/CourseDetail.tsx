@@ -6,10 +6,10 @@ interface CourseDetailProps {
   course: Course
   courses: Course[]
   setCourses: SetCourses
-  setPage: (page: Page) => void
+  openQuiz: (id: number) => void,
 }
 
-export default function CourseDetail({ course, courses, setCourses, setPage }: CourseDetailProps) {
+export default function CourseDetail({ course, courses, setCourses, openQuiz }: CourseDetailProps) {
   const [hideDone, setHideDone] = useState(false)
   const nextUp = course.lessons.find((l) => !l.completed) || course.lessons[0]
 
@@ -41,14 +41,14 @@ export default function CourseDetail({ course, courses, setCourses, setPage }: C
       <ul className="lessons">
         {visible.map((l, i) => (
           <li>
-            <input type="checkbox" checked={l.completed} onChange={() => toggle(i)} />
+            <input type="checkbox" checked={l.completed} onChange={() => toggle(l.id - 1)} />
             <span className={l.completed ? 'done' : ''}>{l.title}</span>
             <span className="faint"> — {l.duration * 60}s</span>
           </li>
         ))}
       </ul>
 
-      <button className="btn-c" onClick={() => setPage('quiz')}>Execute Assessment</button>
+      <button className="btn-c" onClick={() => openQuiz(course.id)}>Execute Assessment</button>
     </div>
   )
 }

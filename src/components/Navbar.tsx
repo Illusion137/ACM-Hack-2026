@@ -1,6 +1,5 @@
 import { FaBook, FaClipboardList, FaCog, FaHome } from 'react-icons/fa'
 import type { Page, User } from '../types'
-
 interface NavbarProps {
   setPage: (page: Page) => void
   user: User
@@ -9,7 +8,7 @@ interface NavbarProps {
 export default function Navbar({ setPage, user }: NavbarProps) {
   return (
     <nav className="navbar">
-      <div className="logo no-select clickable" onClick={() => setPage('dashboard')}>LearnHub</div>
+      <span className="nav-item" title="Home" onClick={() => setPage('dashboard')}><div className="logo">LearnHub</div></span>
       <div className="nav-icons">
         <button className="nav-item" title="Home" aria-label="Home" onClick={() => setPage('dashboard')}><FaHome /></button>
         <button className="nav-item" title="Catalog" aria-label="Catalog" onClick={() => setPage('courses')}><FaBook /></button>

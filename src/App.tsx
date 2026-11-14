@@ -19,15 +19,53 @@ export default function App() {
     setTimeout(() => {
       setCourses(initialCourses)
     }, 1500)
+
+    window.history.replaceState(
+      { page: 'dashboard' },
+      '',
+      '#dashboard'
+    );
+
+    const handlePopState = (event: PopStateEvent) => {
+    
+      if (event.state?.page) {
+        console.log(event)
+        
+        if (window.location.hash.includes('-')) {
+          const id = Number(window.location.hash.split('-').pop())
+          setSelectedId(id)
+        }
+        
+        setPage(event.state.page);
+
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
   }, [])
 
   const openCourse = (id: number) => {
     setSelectedId(id)
+    window.history.pushState({ page: `detail` }, '', `#detail-${id}` )
     setPage('detail')
   }
 
+  const navigateTo = (target: Page) => {
+    if (page == target) {
+      return
+    }
+    window.history.pushState({ page: target }, '', `#${target}`);
+    setPage(target);
+  }
+
+  
   const openQuiz = (id: number) => {
     setSelectedId(id)
+    window.history.pushState({ page: `quiz` }, '', `#quiz-${id}` )
     setPage('quiz')
   }
 
@@ -35,14 +73,14 @@ export default function App() {
 
   return (
     <div className="app">
-      <Navbar setPage={setPage} user={user} />
+      <Navbar setPage={navigateTo} user={user} />
       <main className="content">
         {page === 'dashboard' && <Dashboard courses={courses} openCourse={openCourse} user={user} />}
         {page === 'courses' && (
           <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} />
         )}
         {page === 'detail' && selected && (
-          <CourseDetail course={selected} courses={courses} setCourses={setCourses} setPage={setPage} />
+          <CourseDetail course={selected} courses={courses} setCourses={setCourses} openQuiz={openQuiz} />
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
         {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}

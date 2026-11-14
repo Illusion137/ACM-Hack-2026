@@ -12,7 +12,7 @@ export const initialCourses: Course[] = [
     category: 'Programming',
     enrolled: true,
     startDate: 1767225600000,
-    image: 'https://picsum.photos/seed/web/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/ojmauctysajllzygnyem',
     lessons: [
       { id: 1, title: 'How the Web Works', duration: 12, completed: true },
       { id: 2, title: 'HTML Fundamentals', duration: 25, completed: true },
@@ -67,7 +67,7 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1769904000000,
-    image: 'https://picsum.photos/seed/data/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/ndb6iglypqaeocmfqxxy',
     lessons: [
       { id: 1, title: 'Python Refresher', duration: 20, completed: true },
       { id: 2, title: 'NumPy Arrays', duration: 35, completed: true },
@@ -121,7 +121,7 @@ export const initialCourses: Course[] = [
     category: 'Design',
     enrolled: false,
     startDate: 1772323200000,
-    image: 'https://picsum.photos/seed/ux/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/txvwoqjxr8wk8lzqkoqz',
     lessons: [
       { id: 1, title: 'What is UX?', duration: 15, completed: false },
       { id: 2, title: 'Nielsen Heuristics', duration: 30, completed: false },
@@ -177,7 +177,7 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1775001600000,
-    image: 'https://picsum.photos/seed/market/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/auslcde9juzynwfy8bfj',
     lessons: [],
     quiz: {
       id: 40,
@@ -227,7 +227,7 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1767830400000,
-    image: 'https://picsum.photos/seed/stats/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/byzsykapnek3c75t3sex',
     lessons: [
       { id: 1, title: 'Descriptive Statistics', duration: 30, completed: true },
     ],
@@ -279,7 +279,7 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1777593600000,
-    image: 'https://picsum.photos/seed/pm/400/200',
+    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/wfu2sgdf80unqtg1qhwx',
     lessons: [
       { id: 1, title: 'Project Lifecycle', duration: 20, completed: false },
       { id: 2, title: 'Agile & Scrum', duration: 40, completed: false },
