@@ -19,7 +19,7 @@ export default function Settings({ user, setUser, setCourses }: SettingsProps) {
       return
     }
     setError('')
-    setUser({ name, email })
+    setUser({ name, email, avatar: user.avatar })
   }
 
   const purge = () => {
