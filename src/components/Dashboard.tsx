@@ -1,6 +1,53 @@
 import { useState, useEffect } from 'react'
-import { announcements } from '../data'
+import { announcements, distinct_colors } from '../data'
 import type { Course, User } from '../types'
+import { calculateGrade, isPastDue } from '../utils'
+import { FaRegCircle } from 'react-icons/fa'
+
+const DUE_PREVIEW_COUNT = 4
+
+function DueList(props: { course: Course }) {
+  const [expanded, setExpanded] = useState(false)
+  const { quiz } = props.course
+  const items = [
+    ...props.course.lessons.filter((l) => !l.completed).map((l) => ({ key: `lesson-${l.id}`, title: l.title, due: l.due })),
+    ...(quiz.completed_points === null ? [{ key: 'quiz', title: quiz.title, due: quiz.due }] : []),
+  ].sort((a, b) => a.due - b.due)
+  const visible = expanded ? items : items.slice(0, DUE_PREVIEW_COUNT)
+  const hidden = items.length - visible.length
+
+  return (
+    <div className="card-due">
+      <h4>Due</h4>
+      {items.length === 0 ? (
+        <p className="faint">Nothing due</p>
+      ) : (
+        <ul>
+          {visible.map((item) => (
+            <li key={item.key}>
+              <FaRegCircle className="card-due-icon" />
+              <span className="card-due-title" title={item.title}>{item.title}</span>
+              <span className={`card-due-date ${isPastDue(item.due) ? 'late' : ''}`}>
+                {new Date(item.due).toLocaleDateString(undefined, { month: 'short', day: 'numeric' })}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+      {items.length > DUE_PREVIEW_COUNT && (
+        <button
+          className="card-due-more"
+          onClick={(event) => {
+            event.stopPropagation()
+            setExpanded(!expanded)
+          }}
+        >
+          {expanded ? 'Show less' : `Show ${hidden} more`}
+        </button>
+      )}
+    </div>
+  )
+}
 
 export function getProgress(course: Course): number {
   const done = course.lessons.filter((l) => l.completed).length
@@ -8,13 +55,8 @@ export function getProgress(course: Course): number {
 }
 
 export function formatDate(ts: number): string {
-  const months = [
-    'January', 'February', 'March', 'April',
-    'May', 'June', 'July', 'August',
-    'September', 'October', 'November', 'December'
-  ];
   const d = new Date(ts)
-  return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear()
+  return (d.getMonth() + 1) + '/' + d.getDate() + '/' + d.getFullYear()
 }
 
 export function formatTime(time: number): string {
@@ -40,8 +82,8 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
   const enrolled = courses.filter((c) => c.enrolled)
   const totalLessons = enrolled.reduce((sum, c) => sum + c.lessons.length, 0)
   const doneLessons = enrolled.reduce((sum, c) => sum + c.lessons.filter((l) => l.completed).length, 0)
-  const minutes = enrolled.reduce(
-    (sum, c) => sum + c.lessons.reduce((s, l) => s + l.duration, 0),
+  const points = enrolled.reduce(
+    (sum, c) => sum + c.lessons.reduce((s, l) => s + l.completed_points, 0),
     0
   )
 
@@ -55,7 +97,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
         <div className="stat"><b>{enrolled.length}</b><span>Enrolled</span></div>
         <div className="stat"><b>{totalLessons}</b><span>Lessons</span></div>
         <div className="stat"><b>{doneLessons}</b><span>Done</span></div>
-        <div className="stat"><b>{minutes}</b><span>Min</span></div>
+        <div className="stat"><b>{points}</b><span>Points</span></div>
         <div className="stat"><b>{totalLessons - doneLessons}</b><span>Remaining</span></div>
         <div className="stat"><b>{courses.length}</b><span>Catalog</span></div>
         <div className="stat"><b>0</b><span>Badges</span></div>
@@ -64,19 +106,39 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
 
       <h2>Continue Learning</h2>
       <div className="grid">
-        {enrolled.map((c) => (
-          <div className="card" onClick={() => openCourse(c.id)}>
-            <img src={c.image} />
+        {enrolled.map((c, i) => {
+          const grade = calculateGrade(c)
+          return (
+          <div key={c.id} className="card" onClick={() => openCourse(c.id)}>
+            <div className="card-image">
+              { (user.imageType == "Default") ? 
+                <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Dogs") ? 
+                <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Cats") ? 
+                <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Birds") ? 
+                <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+              }
+              <span className={`grade-badge grade-${grade.standing}`} aria-label={`Grade ${grade.percent}%`}>
+                {grade.percent}%
+              </span>
+            </div>
             <div className="card-body">
-              <h3>{c.title}</h3>
+              <h3 style={{color: distinct_colors[i]}}>{c.title}</h3>
               <p className="faint">Started {formatDate(c.startDate)}</p>
               <div className="bar">
                 <div className="bar-fill" style={{ width: getProgress(c) + '%' }} />
               </div>
               <small>{getProgress(c)}% complete</small>
+              <DueList course={c} />
             </div>
           </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   )

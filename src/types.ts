@@ -1,10 +1,15 @@
 import type { Dispatch, SetStateAction } from 'react'
 
+export type Minigame = 'snake' | 'minesweeper'
+
 export interface Lesson {
   id: number
   title: string
-  duration: number
   completed: boolean
+  completed_points: number
+  points: number
+  due: number
+  minigame: Minigame
 }
 
 export interface Course {
@@ -31,10 +36,12 @@ export interface QuizQuestion {
 }
 
 export interface QuizInfo {
+  id: number;
   title: string
   instructions: string
   due: number
   time_limit?: number
+  completed_points: number | null
   questions: QuizQuestion[]
 }
 
@@ -44,9 +51,13 @@ export interface User {
   darkmode: boolean
   avatar: string;
   password: string
+  imageType: string
   bio?: string
   links?: string[]
 }
+
+// ISOString -> lesson.id
+export type TentativeSchedule = Record<string, string>;
 
 export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile' | 'profile'
 

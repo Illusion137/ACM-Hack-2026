@@ -1,19 +1,25 @@
 import { useState } from 'react'
-import type { Course, SetCourses } from '../types'
+import type { User, Course, SetCourses } from '../types'
+import { distinct_colors } from '../data'
 
 interface CoursesProps {
   courses: Course[]
   setCourses: SetCourses
   openCourse: (id: number) => void
+  user: User
 }
 
-export default function Courses({ courses, setCourses, openCourse }: CoursesProps) {
+export default function Courses({ courses, setCourses, openCourse, user }: CoursesProps) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
 
   const filtered = courses.filter(
     (c) => c.title.includes(query) && (category === 'All' || c.category === category)
   )
+
+  const on_click = (c: Course) => {
+    if(c.enrolled) openCourse(c.id)
+  }
 
   const enroll = (course: Course) => {
     setCourses(prev =>
@@ -56,12 +62,23 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
       {filtered.length === 0 && <p className="faint">0 results.</p>}
 
       <div className="grid">
-        {filtered.map((c) => (
+        {filtered.map((c, i) => (
           <div className="card">
-            <img src={c.image} onClick={() => openCourse(c.id)} />
+            { (user.imageType == "Default") ? 
+              <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Dogs") ? 
+              <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Cats") ? 
+              <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Birds") ? 
+              <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+            }
             <div className="card-body">
               <p className="code">{c.code}</p>
-              <h3 onClick={() => openCourse(c.id)}>{c.title}</h3>
+              <h3 style={{color: distinct_colors[i]}} onClick={() => on_click(c)}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
                 <button className="btn-green" onClick={() => unenroll(c)}>Unenroll</button>

@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { initialCourses, users } from './data'
 import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
@@ -14,6 +14,8 @@ export default function App() {
   const [courses, setCourses] = useState<Course[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
   const [user, setUser] = useState<User>(() => users[Math.floor(Math.random() * users.length)])
+  const leave_guard = useRef<(() => boolean) | null>(null)
+  const quiz_hash = useRef('')
 
   useEffect(() => {
     setTimeout(() => {
@@ -28,6 +30,11 @@ export default function App() {
 
     const handlePopState = (event: PopStateEvent) => {
     
+      if (leave_guard.current && !leave_guard.current()) {
+        window.history.pushState({ page: 'quiz' }, '', quiz_hash.current)
+        return
+      }
+
       if (event.state?.page) {
         console.log(event)
         
@@ -58,6 +65,9 @@ export default function App() {
     if (page == target) {
       return
     }
+    if (leave_guard.current && !leave_guard.current()) {
+      return
+    }
     window.history.pushState({ page: target }, '', `#${target}`);
     setPage(target);
   }
@@ -74,11 +84,16 @@ export default function App() {
   
   const openQuiz = (id: number) => {
     setSelectedId(id)
-    window.history.pushState({ page: `quiz` }, '', `#quiz-${id}` )
+    quiz_hash.current = `#quiz-${id}`
+    window.history.pushState({ page: `quiz` }, '', quiz_hash.current)
     setPage('quiz')
   }
 
   const selected = courses.find((c) => c.id === selectedId)
+
+  const recordQuizScore = (id: number, points: number) => {
+    setCourses((prev) => prev.map((c) => c.id === id ? { ...c, quiz: { ...c.quiz, completed_points: points } } : c))
+  }
 
   return (
     <div className="app">
@@ -86,13 +101,20 @@ export default function App() {
       <main className="content">
         {page === 'dashboard' && <Dashboard courses={courses} openCourse={openCourse} user={user} />}
         {page === 'courses' && (
-          <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} />
+          <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} user={user} />
         )}
         {page === 'detail' && selected && (
           <CourseDetail course={selected} courses={courses} setCourses={setCourses} openQuiz={openQuiz} />
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
-        {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}
+        {page === 'quiz' && selected && (
+          <Quiz
+            key={selected.id}
+            course={selected}
+            on_score={(points) => recordQuizScore(selected.id, points)}
+            set_leave_guard={(guard) => { leave_guard.current = guard }}
+          />
+        )}
         {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} setDarkMode={toggleDarkMode} />}
         {page === 'profile' && <Profile user={user} courses={courses} />}
       </main>
