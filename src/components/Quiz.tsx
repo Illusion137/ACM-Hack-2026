@@ -334,9 +334,11 @@ export function QuizList({ courses, openQuiz }: QuizListProps) {
 
 interface QuizProps {
   course: Course
+  on_score: (points: number) => void
+  set_leave_guard: (guard: (() => boolean) | null) => void
 }
 
-export default function Quiz({ course }: QuizProps) {
+export default function Quiz({ course, on_score, set_leave_guard }: QuizProps) {
   const { quiz } = course
   const emptyAnswers = () => quiz.questions.map(() => UNANSWERED)
   const [selected, setSelected] = useState<number[]>(emptyAnswers)
@@ -394,6 +396,27 @@ export default function Quiz({ course }: QuizProps) {
       clearTimeout(timeout)
     }
   }, [caught, submitted_at, quiz.questions])
+
+  useEffect(() => {
+    if (submitted_at) on_score(score)
+  }, [submitted_at])
+
+  useEffect(() => {
+    if (submitted_at) return
+    const on_before_unload = (event: BeforeUnloadEvent) => event.preventDefault()
+    window.addEventListener('beforeunload', on_before_unload)
+    set_leave_guard(() => {
+      suppress_cheat_until.current = Infinity
+      const leave = window.confirm('Leaving now will fail this quiz. Leave anyway?')
+      suppress_cheat_until.current = Date.now() + CONFIRM_GRACE_MS
+      if (leave) on_score(0)
+      return leave
+    })
+    return () => {
+      window.removeEventListener('beforeunload', on_before_unload)
+      set_leave_guard(null)
+    }
+  }, [submitted_at])
 
   const answer = (question_index: number, selected_answer_index: number) => {
     setSelected((prev) => prev.map((s, i) => (i === question_index ? selected_answer_index : s)))
