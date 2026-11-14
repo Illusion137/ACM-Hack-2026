@@ -64,7 +64,7 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
       <div className="grid">
         {filtered.map((c) => (
           <div className="card">
-            <img src={c.birdimage} onClick={() =>
+            <img src={c.image} onClick={() =>
                 c.enrolled ? openCourse(c.id) : handleOpen()} />
             <div className="card-body">
               <p className="code">{c.code}</p>
