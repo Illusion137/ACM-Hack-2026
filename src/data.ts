@@ -12,7 +12,10 @@ export const initialCourses: Course[] = [
     category: 'Programming',
     enrolled: true,
     startDate: 1767225600000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/ojmauctysajllzygnyem',
+    image: 'src/assets/image1.jpg',
+    dogimage: 'src/assets/dog1.jpeg',
+    catimage: 'src/assets/cat1.jpeg',
+    birdimage: 'src/assets/bird1.jpeg',
     lessons: [
       { id: 1, title: 'How the Web Works', duration: 12, completed: true },
       { id: 2, title: 'HTML Fundamentals', duration: 25, completed: true },
@@ -67,7 +70,10 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1769904000000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/ndb6iglypqaeocmfqxxy',
+    image: 'src/assets/image2.jpg',
+    dogimage: 'src/assets/dog2.jpeg',
+    catimage: 'src/assets/cat2.jpeg',
+    birdimage: 'src/assets/bird2.jpeg',
     lessons: [
       { id: 1, title: 'Python Refresher', duration: 20, completed: true },
       { id: 2, title: 'NumPy Arrays', duration: 35, completed: true },
@@ -121,7 +127,10 @@ export const initialCourses: Course[] = [
     category: 'Design',
     enrolled: false,
     startDate: 1772323200000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/txvwoqjxr8wk8lzqkoqz',
+    image: 'src/assets/image3.jpg',
+    dogimage: 'src/assets/dog3.jpeg',
+    catimage: 'src/assets/cat3.jpeg',
+    birdimage: 'src/assets/bird3.jpeg',
     lessons: [
       { id: 1, title: 'What is UX?', duration: 15, completed: false },
       { id: 2, title: 'Nielsen Heuristics', duration: 30, completed: false },
@@ -177,7 +186,10 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1775001600000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/auslcde9juzynwfy8bfj',
+    image: 'src/assets/image4.svg',
+    dogimage: 'src/assets/dog4.jpeg',
+    catimage: 'src/assets/cat4.jpeg',
+    birdimage: 'src/assets/bird4.jpeg',
     lessons: [],
     quiz: {
       id: 40,
@@ -227,7 +239,10 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1767830400000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/byzsykapnek3c75t3sex',
+    image: 'src/assets/image5.png',
+    dogimage: 'src/assets/dog5.jpeg',
+    catimage: 'src/assets/cat5.jpeg',
+    birdimage: 'src/assets/bird5.jpeg',
     lessons: [
       { id: 1, title: 'Descriptive Statistics', duration: 30, completed: true },
     ],
@@ -279,7 +294,10 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1777593600000,
-    image: 'https://res.cloudinary.com/dtz0urit6/image/upload/q_auto:best,f_jpg/cloudinary-tools-uploads/wfu2sgdf80unqtg1qhwx',
+    image: 'src/assets/image6.svg',
+    dogimage: 'src/assets/dog6.jpeg',
+    catimage: 'src/assets/cat6.jpeg',
+    birdimage: 'src/assets/bird6.jpeg',
     lessons: [
       { id: 1, title: 'Project Lifecycle', duration: 20, completed: false },
       { id: 2, title: 'Agile & Scrum', duration: 40, completed: false },
@@ -331,6 +349,7 @@ export const users: User[] = [
     name: 'Sumi Raygoza',
     email: 'raygoza.d@hotmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/68447327?v=4',
+    password: 'password',
     bio: 'Computer science student interested in mobile development.',
     links: ['https://github.com/Illusion137', 'https://sumii.me'],
   },
@@ -338,11 +357,13 @@ export const users: User[] = [
     name: 'Camelia Mosor',
     email: 'camelia@nau.edu',
     avatar: 'https://avatars.githubusercontent.com/u/109781893?v=4',
+    password: 'password'
   },
   {
     name: 'Imournate',
     email: 'IWantThisAsMyName@gmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/48367869?v=4',
+    password: 'password12345'
   },
 ]
 
