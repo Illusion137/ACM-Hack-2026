@@ -9,6 +9,7 @@ import Quiz, { QuizList } from './components/Quiz'
 import Settings from './components/Settings'
 import type { Course, Page, User } from './types'
 import Profile from './components/Profile'
+import TodoSidebar from './components/TodoSidebar'
 
 interface Route {
   page: Page
@@ -106,6 +107,15 @@ export default function App() {
   const navigateTo = (page: Page) => navigate({ page })
   const openCourse = (id: number) => navigate({ page: 'detail', id })
   const openQuiz = (id: number) => navigate({ page: 'quiz', id })
+  const openModules = (id: number) => navigate({ page: 'detail', id, tab: 'modules' })
+
+  const [planned, setPlanned] = useState<Set<string>>(new Set())
+  const togglePlanned = (key: string) => setPlanned((prev) => {
+    const next = new Set(prev)
+    if (!next.delete(key)) next.add(key)
+    return next
+  })
+  const todo_props = { courses, planned, togglePlanned, openCourse: openModules, openQuiz }
 
   const selected = courses.find((c) => c.id === route.id)
   const page = route.page
@@ -121,6 +131,10 @@ export default function App() {
   }
   
   useEffect(() => {
+    toggleDarkMode(user.darkmode)
+  }, [user.darkmode])
+
+  useEffect(() => {
     document.title = pageTitle(route, selected)
   }, [route, selected])
 
@@ -133,19 +147,27 @@ export default function App() {
       <Navbar setPage={navigateTo} user={user} />
       <main className="content">
         {loading && <p className="faint">Loading…</p>}
-        {page === 'dashboard' && <Dashboard courses={courses} openCourse={openCourse} user={user} />}
+        {page === 'dashboard' && (
+          <div className="todo-layout">
+            <Dashboard courses={courses} openCourse={openCourse} user={user} />
+            <TodoSidebar {...todo_props} />
+          </div>
+        )}
         {page === 'courses' && (
           <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} user={user} />
         )}
         {page === 'detail' && selected && (
-          <CourseDetail
-            course={selected}
-            courses={courses}
-            setCourses={setCourses}
-            openQuiz={openQuiz}
-            tab={route.tab ?? 'home'}
-            setTab={(tab) => navigate({ page: 'detail', id: selected.id, tab })}
-          />
+          <div className="todo-layout">
+            <CourseDetail
+              course={selected}
+              courses={courses}
+              setCourses={setCourses}
+              openQuiz={openQuiz}
+              tab={route.tab ?? 'home'}
+              setTab={(tab) => navigate({ page: 'detail', id: selected.id, tab })}
+            />
+            <TodoSidebar {...todo_props} course={selected} />
+          </div>
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
         {page === 'quiz' && selected && (

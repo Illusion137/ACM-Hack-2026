@@ -539,7 +539,8 @@ h2 { color: #009688; font-size: 15px; text-transform: uppercase; }
   .course-list li { flex-wrap: wrap; }
 }
 
-.todo-layout { display: grid; grid-template-columns: minmax(0, 1fr) 150px; gap: 16px; align-items: start; }
+/* pull the sidebar flush to the right edge, past .content's padding */
+.todo-layout { display: grid; grid-template-columns: minmax(0, 1fr) 200px; gap: 12px; align-items: start; margin-right: -28px; }
 .todo-sidebar {
   position: sticky;
   top: 16px;
@@ -560,7 +561,7 @@ h2 { color: #009688; font-size: 15px; text-transform: uppercase; }
 .todo-range-arrow { display: flex; background: none; border: none; border-radius: 4px; padding: 3px; color: var(--card-text-color); cursor: pointer; }
 .todo-range-arrow:hover { background: var(--hover); }
 
-.todo-rings { display: block; width: 100%; max-width: 120px; margin: 4px auto 0; }
+.todo-rings { display: block; width: 100%; max-width: 200px; margin: 4px auto 0; }
 .todo-rings text { fill: currentColor; text-anchor: middle; }
 .todo-rings text { pointer-events: none; }
 .todo-ring { transition: opacity 0.4s ease; }
@@ -680,6 +681,6 @@ h2 { color: #009688; font-size: 15px; text-transform: uppercase; }
 .todo-item-check:disabled { cursor: default; }
 
 @media (max-width: 1000px) {
-  .todo-layout { grid-template-columns: minmax(0, 1fr); }
+  .todo-layout { grid-template-columns: minmax(0, 1fr); margin-right: 0; }
   .todo-sidebar { position: static; }
 }
