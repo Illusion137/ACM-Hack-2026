@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, type MouseEventHandler } from 'react'
 import type { Course, SetCourses } from '../types'
 
 interface CoursesProps {
@@ -29,6 +29,16 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
     setButtonText(buttonText === 'Show Enrolled Only' ? 'Show All Courses' : 'Show Enrolled Only');
   };
 
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+      setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   return (
     <div>
       <h1>Module Entities</h1>
@@ -55,10 +65,10 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
         {filtered.map((c) => (
           <div className="card">
             <img src={c.image} onClick={() =>
-                c.enrolled ? openCourse(c.id) : {}} />
+                c.enrolled ? openCourse(c.id) : handleOpen()} />
             <div className="card-body">
               <p className="code">{c.code}</p>
-              <h3 onClick={() => c.enrolled ? openCourse(c.id) : {}}>{c.title}</h3>
+              <h3 onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
                 <button className="btn-green" onClick={() => unenroll(c.id)}>Unenroll</button>
@@ -66,7 +76,38 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
                 <button className="btn-b" onClick={() => enroll(c.id)}>Enroll</button>
               )}
             </div>
+            {open?(
+              <div
+                onClick={handleClose}
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "rgba(0, 0, 0, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+              >
+              <div
+                style={{
+                    background: "white",
+                    height: 150,
+                    width: 240,
+                    margin: "auto",
+                    padding: "2%",
+                    border: "2px solid #000",
+                    borderRadius: "10px",
+                    boxShadow: "2px solid black",
+                }}
+              >
+              <h3>Enroll in the class to access course content!</h3>
+            </div>
+        </div>) : (null)}
           </div>
+          
         ))}
       </div>
     </div>
