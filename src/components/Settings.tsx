@@ -57,12 +57,6 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     setDarkMode(darkMode)
   }
 
-
-  const enableDarkMode = () => {
-    toggleDarkMode(!darkMode)
-    setDarkMode(darkMode)
-  }
-
   return (
     <div>
       <h1>Config</h1>

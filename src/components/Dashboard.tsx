@@ -111,7 +111,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
           return (
           <div key={c.id} className="card" onClick={() => openCourse(c.id)}>
             <div className="card-image">
-              <img src={selectImage(c, user)} onClick={() => openCourse(c.id)} />
+              <img src={selectImage(c, user)} alt="" />
               <span className={`grade-badge grade-${grade.standing}`} aria-label={`Grade ${grade.percent}%`}>
                 {grade.percent}%
               </span>
