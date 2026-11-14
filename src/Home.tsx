@@ -9,6 +9,7 @@ import Quiz, { QuizList } from './components/Quiz'
 import Settings from './components/Settings'
 import type { Course, Page, User } from './types'
 import Profile from './components/Profile'
+import {useLocation} from "react-router-dom";
 
 interface Route {
   page: Page
@@ -63,9 +64,11 @@ function parseHash(hash: string): Route {
 }
 
 export default function App() {
+  const {state} = useLocation();
+  const { currentUser } = state;
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash))
   const [courses, setCourses] = useState<Course[]>([])
-  const [user, setUser] = useState<User>(() => users[Math.floor(Math.random() * users.length)])
+  const [user, setUser] = useState(currentUser)
   const leave_guard = useRef<(() => boolean) | null>(null)
   const current_hash = useRef(toHash(route))
 
