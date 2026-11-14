@@ -60,6 +60,6 @@ export interface User {
 // ISOString -> lesson.id
 export type TentativeSchedule = Record<string, string>;
 
-export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile' | 'profile'
+export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile'
 
 export type SetCourses = Dispatch<SetStateAction<Course[]>>
