@@ -4,7 +4,7 @@ import type { Course, User } from '../types'
 
 export function getProgress(course: Course): number {
   const done = course.lessons.filter((l) => l.completed).length
-  return Math.round((done / (course.lessons.length - 1)) * 100)
+  return Math.round((done / (course.lessons.length)) * 100)
 }
 
 export function formatDate(ts: number): string {
