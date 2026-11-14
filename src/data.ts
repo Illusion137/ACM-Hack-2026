@@ -1,4 +1,38 @@
 import type { Course, User } from './types'
+import bird1 from './assets/bird1.webp'
+import bird2 from './assets/bird2.webp'
+import bird3 from './assets/bird3.webp'
+import bird4 from './assets/bird4.webp'
+import bird5 from './assets/bird5.webp'
+import bird6 from './assets/bird6.webp'
+import bunny1 from './assets/bunny1.webp'
+import bunny2 from './assets/bunny2.webp'
+import bunny3 from './assets/bunny3.webp'
+import bunny4 from './assets/bunny4.webp'
+import bunny5 from './assets/bunny5.webp'
+import bunny7 from './assets/bunny7.webp'
+import bunny8 from './assets/bunny8.webp'
+import bunny6 from './assets/bunny6.webp'
+import cat1 from './assets/cat1.webp'
+import cat2 from './assets/cat2.webp'
+import cat3 from './assets/cat3.webp'
+import cat4 from './assets/cat4.webp'
+import cat5 from './assets/cat5.webp'
+import cat6 from './assets/cat6.webp'
+import cat7 from './assets/cat7.webp'
+import cat8 from './assets/cat8.webp'
+import dog1 from './assets/dog1.webp'
+import dog2 from './assets/dog2.webp'
+import dog3 from './assets/dog3.webp'
+import dog4 from './assets/dog4.webp'
+import dog5 from './assets/dog5.webp'
+import dog6 from './assets/dog6.webp'
+import image1 from './assets/image1.webp'
+import image2 from './assets/image2.webp'
+import image3 from './assets/image3.webp'
+import image5 from './assets/image5.webp'
+import image4 from './assets/image4.svg'
+import image6 from './assets/image6.svg'
 
 const QUIZ_INSTRUCTIONS =
   'Answer each multiple-choice question below. Your answers are kept as you go, and you can jump to any question from the sidebar. Submit when you are done to see your score and the correct answers.'
@@ -12,12 +46,12 @@ export const initialCourses: Course[] = [
     category: 'Programming',
     enrolled: true,
     startDate: 1767225600000,
-    image: 'src/assets/image1.jpg',
-    dogimage: 'src/assets/dog1.jpeg',
-    catimage: 'src/assets/cat1.jpeg',
-    birdimage: 'src/assets/bird1.jpeg',
-    bunnyimage: 'src/assets/bunny1.jpg',
-    catnbunnyimage: 'src/assets/cat7.jpg',
+    image: image1,
+    dogimage: dog1,
+    catimage: cat1,
+    birdimage: bird1,
+    bunnyimage: bunny1,
+    catnbunnyimage: cat7,
     lessons: [
       { id: 1, title: 'How the Web Works', points: 10, completed: true, completed_points: 7, due: 1794639540000, minigame: 'snake' },
       { id: 2, title: 'HTML Fundamentals', points: 10, completed: true, completed_points: 8, due: 1794812340000, minigame: 'snake' },
@@ -77,12 +111,12 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1769904000000,
-    image: 'src/assets/image2.jpg',
-    dogimage: 'src/assets/dog2.jpeg',
-    catimage: 'src/assets/cat2.jpeg',
-    birdimage: 'src/assets/bird2.jpeg',
-    bunnyimage: 'src/assets/bunny2.jpg',
-    catnbunnyimage: 'src/assets/bunny7.jpg',
+    image: image2,
+    dogimage: dog2,
+    catimage: cat2,
+    birdimage: bird2,
+    bunnyimage: bunny2,
+    catnbunnyimage: bunny7,
     lessons: [
       { id: 1, title: 'Python Refresher', points: 10, completed: true, completed_points: 9, due: 1794639540000, minigame: 'minesweeper' },
       { id: 2, title: 'NumPy Arrays', points: 10, completed: true, completed_points: 9, due: 1794898740000, minigame: 'snake' },
@@ -140,12 +174,12 @@ export const initialCourses: Course[] = [
     category: 'Design',
     enrolled: false,
     startDate: 1772323200000,
-    image: 'src/assets/image3.jpg',
-    dogimage: 'src/assets/dog3.jpeg',
-    catimage: 'src/assets/cat3.jpeg',
-    birdimage: 'src/assets/bird3.jpeg',
-    bunnyimage: 'src/assets/bunny3.jpg',
-    catnbunnyimage: 'src/assets/cat8.jpg',
+    image: image3,
+    dogimage: dog3,
+    catimage: cat3,
+    birdimage: bird3,
+    bunnyimage: bunny3,
+    catnbunnyimage: cat8,
     lessons: [
       { id: 1, title: 'What is UX?', points: 5, completed: false, completed_points: 0, due: 1794639540000, minigame: 'minesweeper' },
       { id: 2, title: 'User Research', points: 10, completed: false, completed_points: 0, due: 1794898740000, minigame: 'snake' },
@@ -204,12 +238,12 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1775001600000,
-    image: 'src/assets/image4.svg',
-    dogimage: 'src/assets/dog4.jpeg',
-    catimage: 'src/assets/cat4.jpeg',
-    birdimage: 'src/assets/bird4.jpeg',
-    bunnyimage: 'src/assets/bunny4.jpg',
-    catnbunnyimage: 'src/assets/bunny8.jpg',
+    image: image4,
+    dogimage: dog4,
+    catimage: cat4,
+    birdimage: bird4,
+    bunnyimage: bunny4,
+    catnbunnyimage: bunny8,
     lessons: [
       { id: 1, title: 'Marketing Fundamentals', points: 5, completed: true, completed_points: 3, due: 1794639540000, minigame: 'minesweeper' },
       { id: 2, title: 'SEO Basics', points: 10, completed: false, completed_points: 0, due: 1794898740000, minigame: 'snake' },
@@ -267,12 +301,12 @@ export const initialCourses: Course[] = [
     category: 'Data',
     enrolled: true,
     startDate: 1767830400000,
-    image: 'src/assets/image5.png',
-    dogimage: 'src/assets/dog5.jpeg',
-    catimage: 'src/assets/cat5.jpeg',
-    birdimage: 'src/assets/bird5.jpeg',
-    bunnyimage: 'src/assets/bunny5.jpg',
-    catnbunnyimage: 'src/assets/bunny6.png',
+    image: image5,
+    dogimage: dog5,
+    catimage: cat5,
+    birdimage: bird5,
+    bunnyimage: bunny5,
+    catnbunnyimage: bunny6,
     lessons: [
       { id: 1, title: 'Descriptive Statistics', points: 10, completed: true, completed_points: 5, due: 1794639540000, minigame: 'minesweeper' },
       { id: 2, title: 'Probability Basics', points: 10, completed: false, completed_points: 0, due: 1794898740000, minigame: 'snake' },
@@ -330,12 +364,12 @@ export const initialCourses: Course[] = [
     category: 'Business',
     enrolled: false,
     startDate: 1777593600000,
-    image: 'src/assets/image6.svg',
-    dogimage: 'src/assets/dog6.jpeg',
-    catimage: 'src/assets/cat6.jpeg',
-    birdimage: 'src/assets/bird6.jpeg',
-    bunnyimage: 'src/assets/bunny6.png',
-    catnbunnyimage: 'src/assets/bunny1.jpg',
+    image: image6,
+    dogimage: dog6,
+    catimage: cat6,
+    birdimage: bird6,
+    bunnyimage: bunny6,
+    catnbunnyimage: bunny1,
     lessons: [
       { id: 1, title: 'Project Lifecycle', points: 10, completed: true, completed_points: 5, due: 1794639540000, minigame: 'minesweeper' },
       { id: 2, title: 'Scope & Requirements', points: 10, completed: true, completed_points: 7, due: 1794898740000, minigame: 'minesweeper' },
@@ -393,6 +427,7 @@ export const users: User[] = [
     email: 'raygoza.d@hotmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/68447327?v=4',
     password: 'password',
+    darkmode: false,
     imageType: 'Bnnuy',
     bio: 'Computer science student interested in mobile development.',
     links: ['https://github.com/Illusion137', 'https://sumii.me'],
@@ -402,6 +437,7 @@ export const users: User[] = [
     email: 'camelia@nau.edu',
     avatar: 'https://avatars.githubusercontent.com/u/109781893?v=4',
     password: 'password',
+    darkmode: false,
     imageType: 'Default',
   },
   {
@@ -409,6 +445,7 @@ export const users: User[] = [
     email: 'IWantThisAsMyName@gmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/48367869?v=4',
     password: 'password',
+    darkmode: false,
     imageType: 'Default',
   },
 ]
