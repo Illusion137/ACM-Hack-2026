@@ -12,7 +12,7 @@ export default function Navbar({ setPage, user }: NavbarProps) {
       <div className="nav-icons">
         <span className="nav-item" title="Home" onClick={() => setPage('dashboard')}>🏠</span>
         <span className="nav-item" title="Catalog" onClick={() => setPage('courses')}>📚</span>
-        <span className="nav-item" title="Assessment" onClick={() => setPage('quiz')}>📝</span>
+        <span className="nav-item" title="Assessment" onClick={() => setPage('quizzes')}>📝</span>
         <span className="nav-item" title="Config" onClick={() => setPage('settings')}>⚙️</span>
         <a className="nav-item" href="#">❓</a>
       </div>
