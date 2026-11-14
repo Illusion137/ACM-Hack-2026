@@ -50,6 +50,7 @@ export interface User {
   email: string
   avatar: string
   password: string
+  imageType: string
   bio?: string
   links?: string[]
 }

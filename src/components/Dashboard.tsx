@@ -111,7 +111,18 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
           return (
           <div key={c.id} className="card" onClick={() => openCourse(c.id)}>
             <div className="card-image">
-              <img src={c.image} />
+              { (user.imageType == "Default") ? 
+                <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Dogs") ? 
+                <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Cats") ? 
+                <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+              }
+              { (user.imageType == "Birds") ? 
+                <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+              }
               <span className={`grade-badge grade-${grade.standing}`} aria-label={`Grade ${grade.percent}%`}>
                 {grade.percent}%
               </span>

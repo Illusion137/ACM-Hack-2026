@@ -1,14 +1,15 @@
 import { useState } from 'react'
-import type { Course, SetCourses } from '../types'
+import type { User, Course, SetCourses } from '../types'
 import { distinct_colors } from '../data'
 
 interface CoursesProps {
   courses: Course[]
   setCourses: SetCourses
   openCourse: (id: number) => void
+  user: User
 }
 
-export default function Courses({ courses, setCourses, openCourse }: CoursesProps) {
+export default function Courses({ courses, setCourses, openCourse, user }: CoursesProps) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
 
@@ -63,7 +64,18 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
       <div className="grid">
         {filtered.map((c, i) => (
           <div className="card">
-            <img src={c.image} onClick={() => on_click(c)} />
+            { (user.imageType == "Default") ? 
+              <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Dogs") ? 
+              <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Cats") ? 
+              <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Birds") ? 
+              <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+            }
             <div className="card-body">
               <p className="code">{c.code}</p>
               <h3 style={{color: distinct_colors[i]}} onClick={() => on_click(c)}>{c.title}</h3>

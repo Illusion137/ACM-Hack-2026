@@ -381,6 +381,7 @@ export const users: User[] = [
     email: 'raygoza.d@hotmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/68447327?v=4',
     password: 'password',
+    imageType: 'Default',
     bio: 'Computer science student interested in mobile development.',
     links: ['https://github.com/Illusion137', 'https://sumii.me'],
   },
@@ -388,13 +389,15 @@ export const users: User[] = [
     name: 'Camelia Mosor',
     email: 'camelia@nau.edu',
     avatar: 'https://avatars.githubusercontent.com/u/109781893?v=4',
-    password: 'password'
+    password: 'password',
+    imageType: 'Default',
   },
   {
     name: 'Imournate',
     email: 'IWantThisAsMyName@gmail.com',
     avatar: 'https://avatars.githubusercontent.com/u/48367869?v=4',
-    password: 'password12345'
+    password: 'password',
+    imageType: 'Default',
   },
 ]
 
