@@ -50,7 +50,8 @@ export interface QuizInfo {
 export interface User {
   name: string
   email: string
-  avatar: string
+  darkmode: boolean
+  avatar: string;
   password: string
   imageType: 'Default' | 'Dogs' | 'Cats' | 'Birds' | 'Bnnuy' | 'CatnBunny'
   bio?: string

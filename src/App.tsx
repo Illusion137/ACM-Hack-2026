@@ -111,6 +111,15 @@ export default function App() {
   const page = route.page
   const loading = (page === 'detail' || page === 'quiz') && courses.length === 0
 
+  const toggleDarkMode = (toggle: boolean) => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      toggle ? "dark" : "light"
+    )
+    document.documentElement.style.colorScheme =
+      toggle ? "dark" : "light";
+  }
+  
   useEffect(() => {
     document.title = pageTitle(route, selected)
   }, [route, selected])
@@ -150,7 +159,7 @@ export default function App() {
         {(page === 'detail' || page === 'quiz') && !loading && !selected && (
           <p className="faint">Course not found.</p>
         )}
-        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} />}
+        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} setDarkMode={toggleDarkMode} />}
         {page === 'profile' && <Profile user={user} courses={courses} />}
       </main>
       <footer className="footer">© LearnHub · v0.1.0-beta-build-4482</footer>
