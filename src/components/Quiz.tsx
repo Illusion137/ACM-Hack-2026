@@ -40,6 +40,7 @@ function QuestionBase(props: BaseQuestionProps & { show_results: boolean }) {
         <div className="quiz-question-header results">
           <h3 className="quiz-question-number" aria-label={`Question ${index + 1}`}>{index + 1}</h3>
           <span className="quiz-points">{correct ? points : 0} / {points} points</span>
+          {unanswered && <span className="quiz-unanswered">Unanswered</span>}
         </div>
       ) : (
         <div className="quiz-question-header">
@@ -49,26 +50,28 @@ function QuestionBase(props: BaseQuestionProps & { show_results: boolean }) {
       )}
       <div className="quiz-question-body">
         <p id={`question-${index + 1}-text`} className="quiz-question-text">{question}</p>
-        {show_results && unanswered && <p className="quiz-unanswered">Unanswered</p>}
         <div role="radiogroup" aria-labelledby={`question-${index + 1}-text`} className="quiz-answers">
           {answers.map((answer, i) => {
             const is_selected = i === selected_answer_index
             const is_answer = i === answer_index
+            const is_correct = is_selected && is_answer
             const is_wrong = is_selected && !is_answer
+            const is_missed = !is_selected && is_answer
             let tag: string | null = null
             if (show_results && is_selected) tag = is_answer ? 'Correct!' : 'You Answered'
             else if (show_results && is_answer) tag = 'Correct Answer'
 
             const classes = ['quiz-answer']
             if (is_selected) classes.push('selected')
-            if (show_results && is_answer) classes.push('is-answer')
+            if (show_results && is_correct) classes.push('is-correct')
             if (show_results && is_wrong) classes.push('is-wrong')
+            if (show_results && is_missed) classes.push('is-missed')
 
             return (
               <label key={i} className={classes.join(' ')}>
-                {show_results && (is_answer || is_wrong) && (
+                {show_results && (is_correct || is_wrong) && (
                   <span className="quiz-answer-mark" aria-hidden="true">
-                    {is_answer ? <FaCheck /> : <FaTimes />}
+                    {is_correct ? <FaCheck /> : <FaTimes />}
                   </span>
                 )}
                 <input
@@ -79,7 +82,7 @@ function QuestionBase(props: BaseQuestionProps & { show_results: boolean }) {
                   onChange={() => props.on_question_answer(i)}
                 />
                 <span className="quiz-answer-text">{answer}</span>
-                {tag && <span className="sr-only">{tag}</span>}
+                {tag && <span className={is_missed ? 'quiz-answer-label' : 'sr-only'}>{tag}</span>}
               </label>
             )
           })}
