@@ -6,6 +6,82 @@ import type { Course } from '../types'
 
 const UNANSWERED = -1
 
+function notBetweenWithBuffer(stamp: number, left: number, right: number, buffer = 0) {
+  const failed_left = stamp <= left + buffer;
+  const failed_right = stamp >= right - buffer;
+  return failed_left || failed_right;
+}
+
+type CheatReason = 'left_monitor' | 'mouse_away' | 'window_blur' | 'tab_hidden'
+
+interface CheatEvent {
+  reason: CheatReason
+  at: Date
+}
+
+const CHEAT_DESCRIPTIONS: Record<CheatReason, string> = {
+  left_monitor: 'Mouse moved to another screen',
+  mouse_away: 'Mouse left the quiz page',
+  window_blur: 'Quiz window lost focus',
+  tab_hidden: 'Switched to another tab or minimized the window',
+}
+
+const MOUSE_AWAY_LIMIT_MS = 500
+const CONFIRM_GRACE_MS = 1000
+
+type ScreenWithOffset = Screen & { availLeft?: number; availTop?: number }
+
+function checkMouseOutOfBounds(event: MouseEvent): boolean {
+  const screen = window.screen as ScreenWithOffset
+  const left = screen.availLeft ?? 0
+  const top = screen.availTop ?? 0
+  const buffer = 5
+  return notBetweenWithBuffer(event.screenX, left, left + screen.availWidth, buffer)
+    || notBetweenWithBuffer(event.screenY, top, top + screen.availHeight, buffer)
+}
+
+function registerCheatDetection(on_cheat: (reason: CheatReason) => void) {
+  let away_timer: ReturnType<typeof setTimeout> | undefined
+  const cancel_away = () => clearTimeout(away_timer)
+
+  const on_mouse_leave = (event: MouseEvent) => {
+    cancel_away()
+    if (checkMouseOutOfBounds(event)) on_cheat('left_monitor')
+    else away_timer = setTimeout(() => on_cheat('mouse_away'), MOUSE_AWAY_LIMIT_MS)
+  }
+  const on_blur = () => on_cheat('window_blur')
+  const on_visibility_change = () => {
+    if (document.visibilityState === 'hidden') on_cheat('tab_hidden')
+  }
+
+  document.addEventListener('mouseleave', on_mouse_leave)
+  document.addEventListener('mouseover', cancel_away)
+  window.addEventListener('blur', on_blur)
+  window.addEventListener('focus', cancel_away)
+  document.addEventListener('visibilitychange', on_visibility_change)
+
+  return () => {
+    cancel_away()
+    document.removeEventListener('mouseleave', on_mouse_leave)
+    document.removeEventListener('mouseover', cancel_away)
+    window.removeEventListener('blur', on_blur)
+    window.removeEventListener('focus', cancel_away)
+    document.removeEventListener('visibilitychange', on_visibility_change)
+  }
+}
+
+const JUMPSCARE_SRC = '/baldi.png'
+const JUMPSCARE_FADE_MS = 3000
+const JUMPSCARE_LINGER_MS = 5_000
+
+function Jumpscare() {
+  return (
+    <div className="quiz-jumpscare" role="alertdialog" aria-label="Cheating detected">
+      <img src={JUMPSCARE_SRC} alt="" style={{ animationDuration: `${JUMPSCARE_FADE_MS}ms` }} />
+    </div>
+  )
+}
+
 function formatDuration(ms: number): string {
   const total = Math.max(0, Math.floor(ms / 1000))
   const hours = Math.floor(total / 3600)
@@ -27,6 +103,7 @@ interface BaseQuestionProps {
   points: number
   selected_answer_index: number
   on_question_answer: (selected_answer_index: number) => void
+  disabled?: boolean
 }
 
 function QuestionBase(props: BaseQuestionProps & { show_results: boolean }) {
@@ -78,7 +155,7 @@ function QuestionBase(props: BaseQuestionProps & { show_results: boolean }) {
                   type="radio"
                   name={`question-${index + 1}`}
                   checked={is_selected}
-                  disabled={show_results}
+                  disabled={show_results || props.disabled}
                   onChange={() => props.on_question_answer(i)}
                 />
                 <span className="quiz-answer-text">{answer}</span>
@@ -185,6 +262,7 @@ interface PostQuizResultsHeaderProps {
   time_taken_ms: number
   submitted_at: Date
   timed_out: boolean
+  cheat_reason: string | null
   on_retake: () => void
 }
 
@@ -193,6 +271,8 @@ function PostQuizResultsHeader(props: PostQuizResultsHeaderProps) {
   const color = percent >= 70 ? '#0b874b' : percent >= 50 ? '#c66b00' : '#c62828'
 
   return (
+    <>
+    {props.cheat_reason && <p className="quiz-cheat-banner" role="alert">No cheating allowed: {props.cheat_reason}</p>}
     <header className="quiz-header quiz-results-header">
       <div className="quiz-score-ring">
         <CircularProgressbar
@@ -213,6 +293,7 @@ function PostQuizResultsHeader(props: PostQuizResultsHeaderProps) {
         <button className="quiz-btn" onClick={props.on_retake}>Take the Quiz Again</button>
       </div>
     </header>
+    </>
   )
 }
 
@@ -253,14 +334,19 @@ export function QuizList({ courses, openQuiz }: QuizListProps) {
 
 interface QuizProps {
   course: Course
+  on_score: (points: number) => void
+  set_leave_guard: (guard: (() => boolean) | null) => void
 }
 
-export default function Quiz({ course }: QuizProps) {
+export default function Quiz({ course, on_score, set_leave_guard }: QuizProps) {
   const { quiz } = course
   const emptyAnswers = () => quiz.questions.map(() => UNANSWERED)
   const [selected, setSelected] = useState<number[]>(emptyAnswers)
   const [started_at, setStartedAt] = useState(() => new Date())
   const [submitted_at, setSubmittedAt] = useState<Date | null>(null)
+  const [caught, setCaught] = useState<CheatEvent | null>(null)
+  const [showing_jumpscare, setShowingJumpscare] = useState(false)
+  const suppress_cheat_until = useRef(0)
 
   const answered_questions = selected.map((s) => s !== UNANSWERED)
   const answered = answered_questions.filter(Boolean).length
@@ -272,13 +358,65 @@ export default function Quiz({ course }: QuizProps) {
 
   // if passed deadline, just submit
   useEffect(() => {
-    if (deadline === null || submitted_at) return
+    if (deadline === null || submitted_at || caught) return
     const id = setTimeout(() => {
       setSubmittedAt((prev) => prev ?? new Date(deadline))
       window.scrollTo({ top: 0 })
     }, deadline - Date.now())
     return () => clearTimeout(id)
-  }, [deadline, submitted_at])
+  }, [deadline, submitted_at, caught])
+
+  useEffect(() => {
+    if (submitted_at || caught) return
+    return registerCheatDetection((reason) => {
+      if (Date.now() < suppress_cheat_until.current) return
+      setCaught((prev) => prev ?? { reason, at: new Date() })
+    })
+  }, [submitted_at, caught])
+
+  useEffect(() => {
+    if (!caught || submitted_at) return
+    let timeout: ReturnType<typeof setTimeout> | undefined
+    const start = () => {
+      if (timeout || document.visibilityState === 'hidden' || !document.hasFocus()) return
+      setShowingJumpscare(true)
+      timeout = setTimeout(() => {
+        setShowingJumpscare(false)
+        setSelected(quiz.questions.map((q) => (q.answer === 0 ? 1 : 0)))
+        setSubmittedAt(caught.at)
+        window.scrollTo({ top: 0 })
+      }, JUMPSCARE_FADE_MS + JUMPSCARE_LINGER_MS)
+    }
+    start()
+    document.addEventListener('visibilitychange', start)
+    window.addEventListener('focus', start)
+    return () => {
+      document.removeEventListener('visibilitychange', start)
+      window.removeEventListener('focus', start)
+      clearTimeout(timeout)
+    }
+  }, [caught, submitted_at, quiz.questions])
+
+  useEffect(() => {
+    if (submitted_at) on_score(score)
+  }, [submitted_at])
+
+  useEffect(() => {
+    if (submitted_at) return
+    const on_before_unload = (event: BeforeUnloadEvent) => event.preventDefault()
+    window.addEventListener('beforeunload', on_before_unload)
+    set_leave_guard(() => {
+      suppress_cheat_until.current = Infinity
+      const leave = window.confirm('Leaving now will fail this quiz. Leave anyway?')
+      suppress_cheat_until.current = Date.now() + CONFIRM_GRACE_MS
+      if (leave) on_score(0)
+      return leave
+    })
+    return () => {
+      window.removeEventListener('beforeunload', on_before_unload)
+      set_leave_guard(null)
+    }
+  }, [submitted_at])
 
   const answer = (question_index: number, selected_answer_index: number) => {
     setSelected((prev) => prev.map((s, i) => (i === question_index ? selected_answer_index : s)))
@@ -286,9 +424,14 @@ export default function Quiz({ course }: QuizProps) {
 
   const submit = () => {
     const unanswered = quiz.questions.length - answered
-    if (unanswered > 0 && !window.confirm(
-      `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}. Submit anyway?`
-    )) return
+    if (unanswered > 0) {
+      suppress_cheat_until.current = Infinity
+      const confirmed = window.confirm(
+        `You have ${unanswered} unanswered question${unanswered === 1 ? '' : 's'}. Submit anyway?`
+      )
+      suppress_cheat_until.current = Date.now() + CONFIRM_GRACE_MS
+      if (!confirmed) return
+    }
     setSubmittedAt((prev) => prev ?? new Date())
     window.scrollTo({ top: 0 })
   }
@@ -297,6 +440,8 @@ export default function Quiz({ course }: QuizProps) {
     setSelected(emptyAnswers())
     setStartedAt(new Date())
     setSubmittedAt(null)
+    setCaught(null)
+    setShowingJumpscare(false)
     window.scrollTo({ top: 0 })
   }
 
@@ -311,11 +456,13 @@ export default function Quiz({ course }: QuizProps) {
             time_taken_ms={submitted_at.getTime() - started_at.getTime()}
             submitted_at={submitted_at}
             timed_out={timed_out}
+            cheat_reason={caught ? CHEAT_DESCRIPTIONS[caught.reason] : null}
             on_retake={retake}
           />
         ) : (
           <Header title={quiz.title} instructions={quiz.instructions} time_limit={quiz.time_limit} />
         )}
+
 
         {quiz.questions.map((q, i) =>
           submitted_at ? (
@@ -338,6 +485,7 @@ export default function Quiz({ course }: QuizProps) {
               points={q.points}
               selected_answer_index={selected[i]}
               on_question_answer={(choice) => answer(i, choice)}
+              disabled={caught !== null}
             />
           )
         )}
@@ -345,7 +493,7 @@ export default function Quiz({ course }: QuizProps) {
         {!submitted_at && (
           <div className="quiz-submit-bar">
             <span className="quiz-sidebar-meta">{answered} of {quiz.questions.length} answered</span>
-            <button className="quiz-btn" onClick={submit}>Submit Quiz</button>
+            <button className="quiz-btn" onClick={submit} disabled={caught !== null}>Submit Quiz</button>
           </div>
         )}
       </div>
@@ -357,6 +505,8 @@ export default function Quiz({ course }: QuizProps) {
         submitted_at={submitted_at}
         time_limit_ms={time_limit_ms}
       />
+
+      {showing_jumpscare && <Jumpscare />}
     </div>
   )
 }

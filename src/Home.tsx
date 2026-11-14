@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { initialCourses, users } from './data'
 import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
@@ -8,16 +8,14 @@ import Quiz, { QuizList } from './components/Quiz'
 import Settings from './components/Settings'
 import type { Course, Page, User } from './types'
 import Profile from './components/Profile'
-import {useLocation} from 'react-router-dom'
 
-export default function Home() {
-  const {state} = useLocation();
-  const { currentUser } = state;
-
+export default function App() {
   const [page, setPage] = useState<Page>('dashboard')
   const [courses, setCourses] = useState<Course[]>([])
   const [selectedId, setSelectedId] = useState<number | null>(null)
-  const [user, setUser] = useState(currentUser)
+  const [user, setUser] = useState<User>(() => users[Math.floor(Math.random() * users.length)])
+  const leave_guard = useRef<(() => boolean) | null>(null)
+  const quiz_hash = useRef('')
 
   useEffect(() => {
     setTimeout(() => {
@@ -32,6 +30,11 @@ export default function Home() {
 
     const handlePopState = (event: PopStateEvent) => {
     
+      if (leave_guard.current && !leave_guard.current()) {
+        window.history.pushState({ page: 'quiz' }, '', quiz_hash.current)
+        return
+      }
+
       if (event.state?.page) {
         console.log(event)
         
@@ -62,18 +65,35 @@ export default function Home() {
     if (page == target) {
       return
     }
+    if (leave_guard.current && !leave_guard.current()) {
+      return
+    }
     window.history.pushState({ page: target }, '', `#${target}`);
     setPage(target);
+  }
+
+  const toggleDarkMode = (toggle: boolean) => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      toggle ? "dark" : "light"
+    )
+    document.documentElement.style.colorScheme =
+      toggle ? "dark" : "light";
   }
 
   
   const openQuiz = (id: number) => {
     setSelectedId(id)
-    window.history.pushState({ page: `quiz` }, '', `#quiz-${id}` )
+    quiz_hash.current = `#quiz-${id}`
+    window.history.pushState({ page: `quiz` }, '', quiz_hash.current)
     setPage('quiz')
   }
 
   const selected = courses.find((c) => c.id === selectedId)
+
+  const recordQuizScore = (id: number, points: number) => {
+    setCourses((prev) => prev.map((c) => c.id === id ? { ...c, quiz: { ...c.quiz, completed_points: points } } : c))
+  }
 
   return (
     <div className="app">
@@ -87,8 +107,15 @@ export default function Home() {
           <CourseDetail course={selected} courses={courses} setCourses={setCourses} openQuiz={openQuiz} />
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
-        {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}
-        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} />}
+        {page === 'quiz' && selected && (
+          <Quiz
+            key={selected.id}
+            course={selected}
+            on_score={(points) => recordQuizScore(selected.id, points)}
+            set_leave_guard={(guard) => { leave_guard.current = guard }}
+          />
+        )}
+        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} setDarkMode={toggleDarkMode} />}
         {page === 'profile' && <Profile user={user} courses={courses} />}
       </main>
       <footer className="footer">© LearnHub · v0.1.0-beta-build-4482</footer>
