@@ -253,8 +253,10 @@ h2 { color: #009688; font-size: 15px; text-transform: uppercase; }
   background: rgba(0, 0, 0, 0.9);
 }
 .quiz-jumpscare img {
-  max-width: 90vw;
-  max-height: 90vh;
+  height: 85vh;
+  width: auto;
+  max-width: 95vw;
+  object-fit: contain;
   opacity: 0;
   animation: quiz-jumpscare-fade ease-in forwards;
 }
