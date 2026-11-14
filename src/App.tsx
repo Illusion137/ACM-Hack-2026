@@ -77,7 +77,7 @@ export default function App() {
       <main className="content">
         {page === 'dashboard' && <Dashboard courses={courses} openCourse={openCourse} user={user} />}
         {page === 'courses' && (
-          <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} />
+          <Courses courses={courses} setCourses={setCourses} openCourse={openCourse} user={user} />
         )}
         {page === 'detail' && selected && (
           <CourseDetail course={selected} courses={courses} setCourses={setCourses} openQuiz={openQuiz} />

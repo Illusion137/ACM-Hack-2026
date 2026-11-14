@@ -1,13 +1,14 @@
 import { useState } from 'react'
-import type { Course, SetCourses } from '../types'
+import type { Course, SetCourses, User } from '../types'
 
 interface CoursesProps {
   courses: Course[]
   setCourses: SetCourses
   openCourse: (id: number) => void
+  user: User
 }
 
-export default function Courses({ courses, setCourses, openCourse }: CoursesProps) {
+export default function Courses({ courses, setCourses, openCourse, user }: CoursesProps) {
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
 
@@ -58,7 +59,18 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
       <div className="grid">
         {filtered.map((c) => (
           <div className="card">
-            <img src={c.image} onClick={() => openCourse(c.id)} />
+            { (user.imageType == "Default") ? 
+              <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Dogs") ? 
+              <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Cats") ? 
+              <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Birds") ? 
+              <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+            }
             <div className="card-body">
               <p className="code">{c.code}</p>
               <h3 onClick={() => openCourse(c.id)}>{c.title}</h3>

@@ -66,7 +66,18 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
       <div className="grid">
         {enrolled.map((c) => (
           <div className="card" onClick={() => openCourse(c.id)}>
-            <img src={c.image} />
+            { (user.imageType == "Default") ? 
+              <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Dogs") ? 
+              <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Cats") ? 
+              <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+            }
+            { (user.imageType == "Birds") ? 
+              <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+            }
             <div className="card-body">
               <h3>{c.title}</h3>
               <p className="faint">Started {formatDate(c.startDate)}</p>
