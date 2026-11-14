@@ -1,3 +1,5 @@
+import os
+
 from flask import Flask, jsonify, redirect, url_for, request, flash
 from flask_login import (
     LoginManager, UserMixin, login_user,
@@ -9,11 +11,11 @@ from werkzeug.security import generate_password_hash, check_password_hash
 
 app = Flask(__name__)
 
-app.key = "1qhnt8foapimokem1uybe"
+app.secret_key = os.environ["SECRET_KEY"]
 
 # MongoDB connection
-client = MongoClient("mongodb://localhost:27017/")
-db = client["my_database"]
+client = MongoClient(os.environ.get("MONGO_URI", "mongodb://localhost:27017/"))
+db = client[os.environ.get("MONGO_DB", "my_database")]
 users = db["users"]
 
 # Configure Flask-Login

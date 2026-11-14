@@ -69,7 +69,6 @@ if [[ "$DEPLOY_API" == true ]]; then
     [ -d .venv ] || python3 -m venv .venv
     .venv/bin/pip install -q --upgrade pip
     if [ -f requirements.txt ]; then .venv/bin/pip install -q -r requirements.txt; fi
-    .venv/bin/pip install -q fastapi 'uvicorn[standard]'
     chown -R learnhub:learnhub /srv/learnhub
     systemctl enable --now learnhub-api
     systemctl restart learnhub-api"
