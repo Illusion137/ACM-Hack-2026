@@ -12,8 +12,10 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
   const [query, setQuery] = useState('')
   const [category, setCategory] = useState('All')
 
+  const [buttonText, setButtonText] = useState('Show Enrolled Only');
+
   const filtered = courses.filter(
-    (c) => c.title.includes(query) && (category === 'All' || c.category === category)
+    (c) => c.title.includes(query) && ((category === 'All' && buttonText === 'Show Enrolled Only') || c.category === category || buttonText === 'Show All Courses' && c.enrolled)
   )
 
   const enroll = (course: Course) => {
@@ -36,6 +38,20 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
     )
   }
 
+  const handleClick = () => {
+    setButtonText(buttonText === 'Show Enrolled Only' ? 'Show All Courses' : 'Show Enrolled Only');
+  };
+
+  const [open, setOpen] = useState(false);
+
+  const handleClose = () => {
+      setOpen(false);
+  };
+
+  const handleOpen = () => {
+    setOpen(true);
+  };
+
   return (
     <div>
       <h1>Module Entities</h1>
@@ -52,6 +68,8 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
           <option>Design</option>
           <option>Business</option>
         </select>
+
+        <button className="btn" onClick={handleClick}>{buttonText}</button>
       </div>
 
       {filtered.length === 0 && <p className="faint">0 results.</p>}
@@ -60,20 +78,20 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
         {filtered.map((c) => (
           <div className="card">
             { (user.imageType == "Default") ? 
-              <img src={c.image} onClick={() => openCourse(c.id)} /> : null
+              <img src={c.image} onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()} /> : null
             }
             { (user.imageType == "Dogs") ? 
-              <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
+              <img src={c.dogimage} onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()} /> : null
             }
             { (user.imageType == "Cats") ? 
-              <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
+              <img src={c.catimage} onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()} /> : null
             }
             { (user.imageType == "Birds") ? 
-              <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
+              <img src={c.birdimage} onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()} /> : null
             }
             <div className="card-body">
               <p className="code">{c.code}</p>
-              <h3 onClick={() => openCourse(c.id)}>{c.title}</h3>
+              <h3 onClick={() => c.enrolled ? openCourse(c.id) : handleOpen()}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
                 <button className="btn-green" onClick={() => unenroll(c)}>Unenroll</button>
@@ -81,6 +99,36 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
                 <button className="btn-b" onClick={() => enroll(c)}>Enroll</button>
               )}
             </div>
+            {open?(
+              <div
+                onClick={handleClose}
+                style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "rgba(0, 0, 0, 0.2)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                }}
+              >
+              <div
+                style={{
+                    background: "white",
+                    height: 150,
+                    width: 240,
+                    margin: "auto",
+                    padding: "2%",
+                    border: "2px solid #000",
+                    borderRadius: "10px",
+                    boxShadow: "2px solid black",
+                }}
+              >
+              <h3>Enroll in the class to access course content!</h3>
+            </div>
+        </div>) : (null)}
           </div>
         ))}
       </div>
