@@ -4,12 +4,21 @@ import type { Course, User } from '../types'
 
 export function getProgress(course: Course): number {
   const done = course.lessons.filter((l) => l.completed).length
-  return Math.round((done / (course.lessons.length - 1)) * 100)
+  return Math.round((done / (course.lessons.length)) * 100)
 }
 
 export function formatDate(ts: number): string {
+  const months = [
+    'January', 'February', 'March', 'April',
+    'May', 'June', 'July', 'August',
+    'September', 'October', 'November', 'December'
+  ];
   const d = new Date(ts)
-  return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear()
+  return  months[d.getMonth()] + ' ' + d.getDate() + ', ' + d.getFullYear()
+}
+
+export function formatTime(time: number): string {
+  return new Date(time).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' })
 }
 
 interface DashboardProps {
@@ -39,7 +48,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
     <div>
       <marquee className="announce">{announcements.join('   •   ')}</marquee>
       <h1>Welcome back, {user.name}!!!</h1>
-      <p className="faint">Current server time: {now.getTime()}</p>
+      <p className="faint">Current server time: {formatTime(now.getTime())}</p>
 
       <div className="stats">
         <div className="stat"><b>{enrolled.length}</b><span>Enrolled</span></div>

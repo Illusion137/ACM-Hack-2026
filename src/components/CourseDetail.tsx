@@ -6,7 +6,7 @@ interface CourseDetailProps {
   course: Course
   courses: Course[]
   setCourses: SetCourses
-  setPage: (page: Page) => void
+  setPage: (page: Page) => void,
 }
 
 export default function CourseDetail({ course, courses, setCourses, setPage }: CourseDetailProps) {

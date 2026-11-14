@@ -1,5 +1,4 @@
 import type { Page, User } from '../types'
-
 interface NavbarProps {
   setPage: (page: Page) => void
   user: User
@@ -8,7 +7,7 @@ interface NavbarProps {
 export default function Navbar({ setPage, user }: NavbarProps) {
   return (
     <nav className="navbar">
-      <div className="logo">LearnHub</div>
+      <span className="nav-item" title="Home" onClick={() => setPage('dashboard')}><div className="logo">LearnHub</div></span>
       <div className="nav-icons">
         <span className="nav-item" title="Home" onClick={() => setPage('dashboard')}>🏠</span>
         <span className="nav-item" title="Catalog" onClick={() => setPage('courses')}>📚</span>
