@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { announcements, distinct_colors } from '../data'
 import type { Course, User } from '../types'
-import { calculateGrade, isPastDue } from '../utils'
+import { calculateGrade, isPastDue, selectImage } from '../utils'
 import { FaRegCircle } from 'react-icons/fa'
 
 const DUE_PREVIEW_COUNT = 4
@@ -111,18 +111,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
           return (
           <div key={c.id} className="card" onClick={() => openCourse(c.id)}>
             <div className="card-image">
-              { (user.imageType == "Default") ? 
-                <img src={c.image} onClick={() => openCourse(c.id)} /> : null
-              }
-              { (user.imageType == "Dogs") ? 
-                <img src={c.dogimage} onClick={() => openCourse(c.id)} /> : null
-              }
-              { (user.imageType == "Cats") ? 
-                <img src={c.catimage} onClick={() => openCourse(c.id)} /> : null
-              }
-              { (user.imageType == "Birds") ? 
-                <img src={c.birdimage} onClick={() => openCourse(c.id)} /> : null
-              }
+              <img src={selectImage(c, user)} alt="" />
               <span className={`grade-badge grade-${grade.standing}`} aria-label={`Grade ${grade.percent}%`}>
                 {grade.percent}%
               </span>

@@ -57,12 +57,6 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     setDarkMode(darkMode)
   }
 
-
-  const enableDarkMode = () => {
-    toggleDarkMode(!darkMode)
-    setDarkMode(darkMode)
-  }
-
   return (
     <div>
       <h1>Config</h1>
@@ -71,11 +65,13 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
         <input type="password" onChange={(e) => setPassword(e.target.value)} placeholder="Password" />
         <p>Course Image Type</p>
-        <select value={imageType} onChange={(e) => setImageType(e.target.value)}>
+        <select value={imageType} onChange={(e) => setImageType(e.target.value as User['imageType'])}>
           <option>Default</option>
           <option>Dogs</option>
           <option>Cats</option>
           <option>Birds</option>
+          <option>Bnnuy</option>
+          <option>CatnBunny</option>
         </select>
         {message && <p className="error">{message}</p>}
         <div className="row">

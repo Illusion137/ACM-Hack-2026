@@ -1,4 +1,4 @@
-import type { Course } from "./types";
+import type { Course, User } from "./types";
 
 export type GradeStanding = "good" | "okay" | "poor";
 
@@ -32,8 +32,20 @@ export function calculateGrade(course: Course, now = Date.now()) {
 
     let standing: GradeStanding;
     if (percent >= 80) standing = "good";
-    else if (percent >= 60) standing = "okay";
+    else if (percent >= 69) standing = "okay";
     else standing = "poor";
 
     return { percent, standing, earned, possible, quiz_points, quiz_taken };
+}
+
+export function selectImage(course: Course, user: User) {
+    switch(user.imageType) {
+        default:
+        case "Default": return course.image;
+        case "Dogs": return course.dogimage;
+        case "Cats": return course.catimage;
+        case "Birds": return course.birdimage;
+        case "Bnnuy": return course.bunnyimage;
+        case "CatnBunny": return course.catnbunnyimage;
+    }
 }

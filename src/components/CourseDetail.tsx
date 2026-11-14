@@ -6,7 +6,8 @@ import Snake from './minigames/Snake'
 import Minesweeper from './minigames/Minesweeper'
 import type { Course, Lesson, SetCourses, TentativeSchedule } from '../types'
 
-type Tab = 'home' | 'modules' | 'schedule' | 'grades'
+export type CourseTab = 'home' | 'modules' | 'schedule' | 'grades'
+type Tab = CourseTab
 
 const TABS: { id: Tab; label: string }[] = [
   { id: 'home', label: 'Home' },
@@ -20,6 +21,8 @@ interface CourseDetailProps {
   courses: Course[]
   setCourses: SetCourses
   openQuiz: (id: number) => void
+  tab: Tab
+  setTab: (tab: Tab) => void
 }
 
 function formatDay(d: Date): string {
@@ -249,8 +252,7 @@ function LessonGame(props: { lesson: Lesson; on_win: () => void; on_close: () =>
   )
 }
 
-export default function CourseDetail({ course, setCourses, openQuiz }: CourseDetailProps) {
-  const [tab, setTab] = useState<Tab>('home')
+export default function CourseDetail({ course, setCourses, openQuiz, tab, setTab }: CourseDetailProps) {
   const [playing, setPlaying] = useState<Lesson | null>(null)
 
   const completeLesson = (lesson_id: number) => {

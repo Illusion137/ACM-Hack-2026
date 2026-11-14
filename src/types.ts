@@ -24,6 +24,8 @@ export interface Course {
   dogimage: string
   catimage: string
   birdimage: string
+  bunnyimage: string
+  catnbunnyimage: string
   lessons: Lesson[]
   quiz: QuizInfo
 }
@@ -51,7 +53,7 @@ export interface User {
   darkmode: boolean
   avatar: string;
   password: string
-  imageType: string
+  imageType: 'Default' | 'Dogs' | 'Cats' | 'Birds' | 'Bnnuy' | 'CatnBunny'
   bio?: string
   links?: string[]
 }
@@ -59,6 +61,6 @@ export interface User {
 // ISOString -> lesson.id
 export type TentativeSchedule = Record<string, string>;
 
-export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile' | 'profile'
+export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile'
 
 export type SetCourses = Dispatch<SetStateAction<Course[]>>
