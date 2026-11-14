@@ -18,7 +18,7 @@ export function formatDate(ts: number): string {
 }
 
 export function formatTime(time: number): string {
-  return new Date(time / 1000).toLocaleString()
+  return new Date(time).toLocaleString("en-GB", {hour: "2-digit", minute: "2-digit", hour12:true})
 }
 
 interface DashboardProps {
