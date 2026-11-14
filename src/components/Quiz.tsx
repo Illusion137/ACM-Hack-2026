@@ -72,7 +72,7 @@ function registerCheatDetection(on_cheat: (reason: CheatReason) => void) {
 
 const JUMPSCARE_SRC = '/baldi.webp'
 const JUMPSCARE_FADE_MS = 3000
-const JUMPSCARE_LINGER_MS = 5_000
+const JUMPSCARE_LINGER_MS = 3_000
 
 function Jumpscare() {
   return (
