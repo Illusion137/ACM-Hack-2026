@@ -1,4 +1,7 @@
-import type { Course, QuizQuestion } from './types'
+import type { Course } from './types'
+
+const QUIZ_INSTRUCTIONS =
+  'Answer each multiple-choice question below. Your answers are kept as you go, and you can jump to any question from the sidebar. Submit when you are done to see your score and the correct answers.'
 
 export const initialCourses: Course[] = [
   {
@@ -16,6 +19,38 @@ export const initialCourses: Course[] = [
       { id: 3, title: 'Styling with CSS', duration: 30, completed: false },
       { id: 4, title: 'JavaScript Basics', duration: 40, completed: false },
     ],
+    quiz: {
+      title: 'CS-101 Web Fundamentals Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1795330740000,
+      questions: [
+        {
+          q: 'Which HTML tag is used for the largest heading?',
+          options: ['<head>', '<h6>', '<h1>', '<header>'],
+          answer: 2,
+        },
+        {
+          q: 'What does CSS stand for?',
+          options: ['Creative Style Sheets', 'Cascading Style Sheets', 'Computer Style Syntax', 'Colorful Style Sheets'],
+          answer: 1,
+        },
+        {
+          q: 'Which keyword declares a constant in JavaScript?',
+          options: ['var', 'let', 'const', 'static'],
+          answer: 2,
+        },
+        {
+          q: 'What does the DOM stand for?',
+          options: ['Document Object Model', 'Data Object Map', 'Display Output Mode', 'Digital Order Model'],
+          answer: 0,
+        },
+        {
+          q: 'Which method adds an item to the end of an array?',
+          options: ['shift()', 'push()', 'pop()', 'unshift()'],
+          answer: 1,
+        },
+      ],
+    },
   },
   {
     id: 2,
@@ -31,6 +66,38 @@ export const initialCourses: Course[] = [
       { id: 2, title: 'NumPy Arrays', duration: 35, completed: true },
       { id: 3, title: 'Pandas DataFrames', duration: 45, completed: true },
     ],
+    quiz: {
+      title: 'DS-210 Python Data Tools Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1795589940000,
+      questions: [
+        {
+          q: 'Which library provides the DataFrame type?',
+          options: ['NumPy', 'pandas', 'Matplotlib', 'SciPy'],
+          answer: 1,
+        },
+        {
+          q: 'What does np.arange(5) return?',
+          options: ['[1, 2, 3, 4, 5]', '[0, 1, 2, 3, 4]', '[0, 1, 2, 3, 4, 5]', '5'],
+          answer: 1,
+        },
+        {
+          q: 'Which pandas method shows the first rows of a DataFrame?',
+          options: ['first()', 'top()', 'head()', 'peek()'],
+          answer: 2,
+        },
+        {
+          q: 'What is the result of 7 // 2 in Python?',
+          options: ['3.5', '3', '4', '1'],
+          answer: 1,
+        },
+        {
+          q: 'Which pandas method removes rows with missing values?',
+          options: ['dropna()', 'fillna()', 'isna()', 'remove()'],
+          answer: 0,
+        },
+      ],
+    },
   },
   {
     id: 3,
@@ -48,6 +115,38 @@ export const initialCourses: Course[] = [
       { id: 4, title: 'Usability Testing', duration: 35, completed: false },
       { id: 5, title: 'Accessibility', duration: 30, completed: false },
     ],
+    quiz: {
+      title: 'UX-150 UX Principles Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1795935540000,
+      questions: [
+        {
+          q: 'Which Nielsen heuristic covers keeping users informed about what is going on?',
+          options: ['Error prevention', 'Visibility of system status', 'Aesthetic and minimalist design', 'Flexibility and efficiency of use'],
+          answer: 1,
+        },
+        {
+          q: 'What is the main purpose of a wireframe?',
+          options: ['Final visual design', 'Laying out structure and content', 'Writing production code', 'Running A/B tests'],
+          answer: 1,
+        },
+        {
+          q: 'What is the WCAG AA minimum contrast ratio for normal body text?',
+          options: ['3:1', '4.5:1', '7:1', '2:1'],
+          answer: 1,
+        },
+        {
+          q: 'In usability testing, what does "think aloud" mean?',
+          options: ['Users narrate their thoughts while doing tasks', 'The facilitator explains the design', 'Users fill out a survey afterward', 'The team discusses results'],
+          answer: 0,
+        },
+        {
+          q: 'About how many users does Nielsen suggest finds most usability problems in one round?',
+          options: ['1', '5', '20', '100'],
+          answer: 1,
+        },
+      ],
+    },
   },
   {
     id: 4,
@@ -59,6 +158,38 @@ export const initialCourses: Course[] = [
     startDate: 1775001600000,
     image: 'https://picsum.photos/seed/market/400/200',
     lessons: [],
+    quiz: {
+      title: 'MK-200 Marketing Basics Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1796194740000,
+      questions: [
+        {
+          q: 'What does SEO stand for?',
+          options: ['Search Engine Optimization', 'Social Engagement Outreach', 'Sales Efficiency Operations', 'Site Error Overview'],
+          answer: 0,
+        },
+        {
+          q: 'What does CTR measure?',
+          options: ['Cost per sale', 'Clicks divided by impressions', 'Total revenue', 'Time on page'],
+          answer: 1,
+        },
+        {
+          q: 'Which of these is an example of owned media?',
+          options: ['A paid search ad', 'Your company\'s blog', 'A news article about you', 'A sponsored post'],
+          answer: 1,
+        },
+        {
+          q: 'What is a conversion?',
+          options: ['A page view', 'A user completing a desired action', 'A social media share', 'An ad impression'],
+          answer: 1,
+        },
+        {
+          q: 'What does A/B testing compare?',
+          options: ['Two versions of something to see which performs better', 'Two competitors', 'Audience age groups', 'Paid and organic traffic'],
+          answer: 0,
+        },
+      ],
+    },
   },
   {
     id: 5,
@@ -72,6 +203,38 @@ export const initialCourses: Course[] = [
     lessons: [
       { id: 1, title: 'Descriptive Statistics', duration: 30, completed: true },
     ],
+    quiz: {
+      title: 'ST-120 Descriptive Statistics Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1796540340000,
+      questions: [
+        {
+          q: 'What is the median of 2, 5, 9, 11, 20?',
+          options: ['9', '11', '9.4', '5'],
+          answer: 0,
+        },
+        {
+          q: 'Which measure is most affected by outliers?',
+          options: ['Median', 'Mode', 'Mean', 'Interquartile range'],
+          answer: 2,
+        },
+        {
+          q: 'What is the mode of 3, 7, 7, 2, 9?',
+          options: ['3', '7', '5.6', '9'],
+          answer: 1,
+        },
+        {
+          q: 'Standard deviation measures…',
+          options: ['The center of the data', 'How spread out the data is', 'The most common value', 'The number of data points'],
+          answer: 1,
+        },
+        {
+          q: 'What is the range of 4, 8, 15, 16, 23?',
+          options: ['19', '23', '13.2', '15'],
+          answer: 0,
+        },
+      ],
+    },
   },
   {
     id: 6,
@@ -86,34 +249,38 @@ export const initialCourses: Course[] = [
       { id: 1, title: 'Project Lifecycle', duration: 20, completed: false },
       { id: 2, title: 'Agile & Scrum', duration: 40, completed: false },
     ],
-  },
-]
-
-export const quizQuestions: QuizQuestion[] = [
-  {
-    q: 'Which HTML tag is used for the largest heading?',
-    options: ['<head>', '<h6>', '<h1>', '<header>'],
-    answer: 2,
-  },
-  {
-    q: 'What does CSS stand for?',
-    options: ['Creative Style Sheets', 'Cascading Style Sheets', 'Computer Style Syntax', 'Colorful Style Sheets'],
-    answer: 1,
-  },
-  {
-    q: 'Which keyword declares a constant in JavaScript?',
-    options: ['var', 'let', 'const', 'static'],
-    answer: 2,
-  },
-  {
-    q: 'What does the DOM stand for?',
-    options: ['Document Object Model', 'Data Object Map', 'Display Output Mode', 'Digital Order Model'],
-    answer: 0,
-  },
-  {
-    q: 'Which method adds an item to the end of an array?',
-    options: ['shift()', 'push()', 'pop()', 'unshift()'],
-    answer: 1,
+    quiz: {
+      title: 'PM-300 Project Management Quiz',
+      instructions: QUIZ_INSTRUCTIONS,
+      due: 1796799540000,
+      questions: [
+        {
+          q: 'In Scrum, what is a time-boxed iteration called?',
+          options: ['Phase', 'Sprint', 'Milestone', 'Epic'],
+          answer: 1,
+        },
+        {
+          q: 'Who prioritizes the product backlog in Scrum?',
+          options: ['Scrum Master', 'Development team', 'Product Owner', 'Stakeholders'],
+          answer: 2,
+        },
+        {
+          q: 'Which is NOT one of the triple constraints?',
+          options: ['Scope', 'Time', 'Cost', 'Morale'],
+          answer: 3,
+        },
+        {
+          q: 'What does a Gantt chart show?',
+          options: ['Budget breakdown', 'Tasks over time', 'Team org structure', 'Risk ratings'],
+          answer: 1,
+        },
+        {
+          q: 'Which project lifecycle phase comes first?',
+          options: ['Execution', 'Closing', 'Initiation', 'Monitoring'],
+          answer: 2,
+        },
+      ],
+    },
   },
 ]
 

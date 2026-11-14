@@ -17,6 +17,7 @@ export interface Course {
   startDate: number
   image: string
   lessons: Lesson[]
+  quiz: QuizInfo
 }
 
 export interface QuizQuestion {
@@ -25,11 +26,18 @@ export interface QuizQuestion {
   answer: number
 }
 
+export interface QuizInfo {
+  title: string
+  instructions: string
+  due: number
+  questions: QuizQuestion[]
+}
+
 export interface User {
   name: string
   email: string
 }
 
-export type Page = 'dashboard' | 'courses' | 'detail' | 'quiz' | 'settings'
+export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings'
 
 export type SetCourses = Dispatch<SetStateAction<Course[]>>
