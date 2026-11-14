@@ -21,7 +21,7 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     e.preventDefault();
     if (password == user.password)
     {
-      setUser({ name: name, email: email, avatar: user.avatar, password: user.password });
+      setUser({ name: name, email: email, avatar: user.avatar, password: user.password, darkmode: darkMode });
       setMessage("Profile updated!");
     }
     else
@@ -42,10 +42,6 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     setMessage("Courses purged!");
   }
 
-  const enableDarkMode = () => {
-    toggleDarkMode(!darkMode)
-    setDarkMode(darkMode)
-  }
 
   const enableDarkMode = () => {
     toggleDarkMode(!darkMode)
@@ -62,7 +58,7 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
         {message && <p className="error">{message}</p>}
         <div className="row">
           <button className="btn-a" type="button" onClick={() => enableDarkMode()}>
-            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+            {darkMode ? "🌙 Dark Mode" : "☀️ Light Mode"}
           </button>
         </div>
         <div className="row">
