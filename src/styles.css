@@ -232,6 +232,33 @@ h2 { color: #009688; font-size: 15px; text-transform: uppercase; }
 .quiz-sidebar h3 { display: flex; align-items: center; gap: 6px; font-size: 15px; margin: 0 0 4px; }
 .quiz-timer { font-variant-numeric: tabular-nums; }
 .quiz-timer.warning { color: #c62828; font-weight: 600; }
+.quiz-cheat-banner {
+  background: #c62828;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 700;
+  text-align: center;
+  border-radius: 4px;
+  padding: 12px 16px;
+  margin: 0 0 20px;
+}
+.quiz-btn:disabled { background: #8b969e; border-color: #8b969e; cursor: not-allowed; }
+.quiz-jumpscare {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(0, 0, 0, 0.9);
+}
+.quiz-jumpscare img {
+  max-width: 90vw;
+  max-height: 90vh;
+  opacity: 0;
+  animation: quiz-jumpscare-fade ease-in forwards;
+}
+@keyframes quiz-jumpscare-fade { to { opacity: 1; } }
 .quiz-timed-out { color: #c62828; font-weight: 600; margin-top: 8px !important; }
 .quiz-sidebar-meta { color: #6b7780; font-size: 13px; margin: 0 0 12px; }
 .quiz-question-nav { list-style: none; padding: 0; margin: 0 0 20px; }
