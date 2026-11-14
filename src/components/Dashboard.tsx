@@ -4,12 +4,12 @@ import type { Course, User } from '../types'
 
 export function getProgress(course: Course): number {
   const done = course.lessons.filter((l) => l.completed).length
-  return Math.round((done / (course.lessons.length - 1)) * 100)
+  return Math.round((done / (course.lessons.length)) * 100)
 }
 
 export function formatDate(ts: number): string {
   const d = new Date(ts)
-  return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear()
+  return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
 }
 
 interface DashboardProps {
@@ -22,9 +22,10 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       setNow(new Date())
-    }, 1000)
+    }, 1000);
+    return () => clearInterval(interval);
   }, [])
 
   const enrolled = courses.filter((c) => c.enrolled)
@@ -50,7 +51,6 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
         <div className="stat"><b>{courses.length}</b><span>Catalog</span></div>
         <div className="stat"><b>0</b><span>Badges</span></div>
         <div className="stat"><b>N/A</b><span>Rank</span></div>
-        <div className="stat"><b>{Math.random().toFixed(2)}</b><span>Engagement idx</span></div>
       </div>
 
       <h2>Continue Learning</h2>
