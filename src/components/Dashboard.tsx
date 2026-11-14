@@ -22,9 +22,10 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {
-    setInterval(() => {
+    const interval = setInterval(() => {
       setNow(new Date())
-    }, 1000)
+    }, 1000);
+    return () => clearInterval(interval);
   }, [])
 
   const enrolled = courses.filter((c) => c.enrolled)
