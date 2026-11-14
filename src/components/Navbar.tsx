@@ -1,3 +1,4 @@
+import { FaBook, FaClipboardList, FaCog, FaHome } from 'react-icons/fa'
 import type { Page, User } from '../types'
 
 interface NavbarProps {
@@ -8,16 +9,15 @@ interface NavbarProps {
 export default function Navbar({ setPage, user }: NavbarProps) {
   return (
     <nav className="navbar">
-      <div className="logo">LearnHub</div>
+      <div className="logo no-select clickable" onClick={() => setPage('dashboard')}>LearnHub</div>
       <div className="nav-icons">
-        <span className="nav-item" title="Home" onClick={() => setPage('dashboard')}>🏠</span>
-        <span className="nav-item" title="Catalog" onClick={() => setPage('courses')}>📚</span>
-        <span className="nav-item" title="Assessment" onClick={() => setPage('quiz')}>📝</span>
-        <span className="nav-item" title="Config" onClick={() => setPage('settings')}>⚙️</span>
-        <a className="nav-item" href="#">❓</a>
+        <button className="nav-item" title="Home" aria-label="Home" onClick={() => setPage('dashboard')}><FaHome /></button>
+        <button className="nav-item" title="Catalog" aria-label="Catalog" onClick={() => setPage('courses')}><FaBook /></button>
+        <button className="nav-item" title="Quizzes" aria-label="Quizzes" onClick={() => setPage('quizzes')}><FaClipboardList /></button>
+        <button className="nav-item" title="Settings" aria-label="Settings" onClick={() => setPage('settings')}><FaCog /></button>
       </div>
-      <div className="nav-user">
-        <img src="https://i.pravatar.cc/40?img=12" className="avatar" />
+      <div className="nav-user clickable" onClick={() => setPage('profile')}>
+        <img src={user.avatar} className="avatar" />
         <span>{user.name}</span>
       </div>
     </nav>
