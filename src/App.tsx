@@ -62,6 +62,15 @@ export default function App() {
     setPage(target);
   }
 
+  const toggleDarkMode = (toggle: boolean) => {
+    document.documentElement.setAttribute(
+      "data-theme",
+      toggle ? "dark" : "light"
+    )
+    document.documentElement.style.colorScheme =
+      toggle ? "dark" : "light";
+  }
+
   
   const openQuiz = (id: number) => {
     setSelectedId(id)
@@ -84,7 +93,7 @@ export default function App() {
         )}
         {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
         {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}
-        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} />}
+        {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} setDarkMode={toggleDarkMode} />}
         {page === 'profile' && <Profile user={user} courses={courses} />}
       </main>
       <footer className="footer">© LearnHub · v0.1.0-beta-build-4482</footer>

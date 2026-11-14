@@ -5,12 +5,16 @@ interface SettingsProps {
   user: User
   setUser: (user: User) => void
   setCourses: SetCourses
+  setDarkMode: (toggle: boolean) => void
 }
 
-export default function Settings({ user, setUser, setCourses }: SettingsProps) {
+export default function Settings({ user, setUser, setCourses, setDarkMode}: SettingsProps) {
   const [name, setName] = useState(user.name)
   const [email, setEmail] = useState(user.email)
   const [error, setError] = useState('')
+  const [darkMode, toggleDarkMode] = useState(user.darkmode);
+
+
 
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault()
@@ -19,8 +23,9 @@ export default function Settings({ user, setUser, setCourses }: SettingsProps) {
       return
     }
     setError('')
-    setUser({ name, email, avatar: user.avatar })
+    setUser({ name, email, avatar: user.avatar, darkmode: darkMode })
   }
+
 
   const purge = () => {
     setCourses((prev) =>
@@ -32,6 +37,11 @@ export default function Settings({ user, setUser, setCourses }: SettingsProps) {
     )
   }
 
+  const enableDarkMode = () => {
+    toggleDarkMode(!darkMode)
+    setDarkMode(darkMode)
+  }
+
   return (
     <div>
       <h1>Config</h1>
@@ -40,6 +50,11 @@ export default function Settings({ user, setUser, setCourses }: SettingsProps) {
         <input value={email} onChange={(e) => setEmail(e.target.value)} placeholder="Email" />
         <input type="password" placeholder="Password" />
         {error && <p className="error">{error}</p>}
+        <div className="row">
+          <button className="btn-a" type="button" onClick={() => enableDarkMode()}>
+            {darkMode ? "☀️ Light Mode" : "🌙 Dark Mode"}
+          </button>
+        </div>
         <div className="row">
           <button className="btn-a" type="submit">Save</button>
           <button className="btn-a" type="button" onClick={purge}>Purge</button>

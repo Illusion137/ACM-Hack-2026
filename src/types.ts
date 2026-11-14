@@ -38,6 +38,7 @@ export interface QuizInfo {
 export interface User {
   name: string
   email: string
+  darkmode: boolean
   avatar: string;
   bio?: string
   links?: string[]
