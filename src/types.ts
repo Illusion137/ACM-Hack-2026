@@ -24,12 +24,14 @@ export interface QuizQuestion {
   q: string
   options: string[]
   answer: number
+  points: number
 }
 
 export interface QuizInfo {
   title: string
   instructions: string
   due: number
+  time_limit?: number
   questions: QuizQuestion[]
 }
 

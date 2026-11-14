@@ -4,7 +4,7 @@ import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
 import Courses from './components/Courses'
 import CourseDetail from './components/CourseDetail'
-import Quiz from './components/Quiz'
+import Quiz, { QuizList } from './components/Quiz'
 import Settings from './components/Settings'
 import type { Course, Page, User } from './types'
 
@@ -25,6 +25,11 @@ export default function App() {
     setPage('detail')
   }
 
+  const openQuiz = (id: number) => {
+    setSelectedId(id)
+    setPage('quiz')
+  }
+
   const selected = courses.find((c) => c.id === selectedId)
 
   return (
@@ -38,7 +43,8 @@ export default function App() {
         {page === 'detail' && selected && (
           <CourseDetail course={selected} courses={courses} setCourses={setCourses} setPage={setPage} />
         )}
-        {page === 'quiz' && <Quiz />}
+        {page === 'quizzes' && <QuizList courses={courses} openQuiz={openQuiz} />}
+        {page === 'quiz' && selected && <Quiz key={selected.id} course={selected} />}
         {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} />}
       </main>
       <footer className="footer">© LearnHub · v0.1.0-beta-build-4482</footer>
