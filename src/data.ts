@@ -1,4 +1,4 @@
-import type { Course } from './types'
+import type { Course, User } from './types'
 
 const QUIZ_INSTRUCTIONS =
   'Answer each multiple-choice question below. Your answers are kept as you go, and you can jump to any question from the sidebar. Submit when you are done to see your score and the correct answers.'
@@ -320,6 +320,26 @@ export const initialCourses: Course[] = [
   },
 ]
 
+export const users: User[] = [
+  {
+    name: 'Sumi Raygoza',
+    email: 'raygoza.d@hotmail.com',
+    avatar: 'https://avatars.githubusercontent.com/u/68447327?v=4',
+    bio: 'Computer science student interested in mobile development.',
+    links: ['https://github.com/Illusion137', 'https://sumii.me'],
+  },
+  {
+    name: 'Camelia Mosor',
+    email: 'camelia@nau.edu',
+    avatar: 'https://avatars.githubusercontent.com/u/109781893?v=4',
+  },
+  {
+    name: 'Imournate',
+    email: 'IWantThisAsMyName@gmail.com',
+    avatar: 'https://avatars.githubusercontent.com/u/48367869?v=4',
+  },
+]
+
 export const announcements: string[] = [
   '📢 System maintenance scheduled — check back later',
   '🎉 New courses added this month!',
@@ -327,3 +347,4 @@ export const announcements: string[] = [
   '🔥 Limited-time: 3 new badges available',
   '📅 Office hours moved',
 ]
+

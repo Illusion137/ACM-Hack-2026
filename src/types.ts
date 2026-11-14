@@ -39,8 +39,10 @@ export interface User {
   name: string
   email: string
   avatar: string;
+  bio?: string
+  links?: string[]
 }
 
-export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings'
+export type Page = 'dashboard' | 'courses' | 'detail' | 'quizzes' | 'quiz' | 'settings' | 'profile' | 'profile'
 
 export type SetCourses = Dispatch<SetStateAction<Course[]>>
