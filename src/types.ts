@@ -16,6 +16,9 @@ export interface Course {
   enrolled: boolean
   startDate: number
   image: string
+  dogimage: string
+  catimage: string
+  birdimage: string
   lessons: Lesson[]
   quiz: QuizInfo
 }
@@ -40,6 +43,7 @@ export interface User {
   email: string
   darkmode: boolean
   avatar: string;
+  password: string
   bio?: string
   links?: string[]
 }
