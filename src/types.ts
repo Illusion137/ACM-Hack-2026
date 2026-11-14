@@ -28,6 +28,7 @@ export interface QuizQuestion {
 }
 
 export interface QuizInfo {
+  id: number;
   title: string
   instructions: string
   due: number

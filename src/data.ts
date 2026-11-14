@@ -20,6 +20,7 @@ export const initialCourses: Course[] = [
       { id: 4, title: 'JavaScript Basics', duration: 40, completed: false },
     ],
     quiz: {
+      id: 10,
       title: 'CS-101 Web Fundamentals Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1795330740000,
@@ -73,6 +74,7 @@ export const initialCourses: Course[] = [
       { id: 3, title: 'Pandas DataFrames', duration: 45, completed: true },
     ],
     quiz: {
+      id: 20,
       title: 'DS-210 Python Data Tools Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1795589940000,
@@ -128,6 +130,7 @@ export const initialCourses: Course[] = [
       { id: 5, title: 'Accessibility', duration: 30, completed: false },
     ],
     quiz: {
+      id: 30,
       title: 'UX-150 UX Principles Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1795935540000,
@@ -177,6 +180,7 @@ export const initialCourses: Course[] = [
     image: 'https://picsum.photos/seed/market/400/200',
     lessons: [],
     quiz: {
+      id: 40,
       title: 'MK-200 Marketing Basics Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1796194740000,
@@ -228,6 +232,7 @@ export const initialCourses: Course[] = [
       { id: 1, title: 'Descriptive Statistics', duration: 30, completed: true },
     ],
     quiz: {
+      id: 50,
       title: 'ST-120 Descriptive Statistics Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1796540340000,
@@ -280,6 +285,7 @@ export const initialCourses: Course[] = [
       { id: 2, title: 'Agile & Scrum', duration: 40, completed: false },
     ],
     quiz: {
+      id: 60,
       title: 'PM-300 Project Management Quiz',
       instructions: QUIZ_INSTRUCTIONS,
       due: 1796799540000,
