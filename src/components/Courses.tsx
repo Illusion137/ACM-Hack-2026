@@ -16,12 +16,23 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
   )
 
   const enroll = (course: Course) => {
-    course.enrolled = true
-    setCourses(courses)
+    setCourses(prev =>
+      prev.map(c =>
+        c.id === course.id
+          ? { ...c, enrolled: true }
+          : c
+      )
+    )
   }
 
-  const unenroll = (id: number) => {
-    setCourses(courses.map((c) => (c.id === id ? { ...c, enrolled: false } : c)))
+  const unenroll = (course: Course) => {
+     setCourses(prev =>
+      prev.map(c =>
+        c.id === course.id
+          ? { ...c, enrolled: false }
+          : c
+      )
+    )
   }
 
   return (
@@ -53,7 +64,7 @@ export default function Courses({ courses, setCourses, openCourse }: CoursesProp
               <h3 onClick={() => openCourse(c.id)}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
-                <button className="btn-green" onClick={() => unenroll(c.id)}>Unenroll</button>
+                <button className="btn-green" onClick={() => unenroll(c)}>Unenroll</button>
               ) : (
                 <button className="btn-b" onClick={() => enroll(c)}>Enroll</button>
               )}
