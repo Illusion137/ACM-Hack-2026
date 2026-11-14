@@ -24,6 +24,8 @@ export interface Course {
   dogimage: string
   catimage: string
   birdimage: string
+  bunnyimage: string
+  catnbunnyimage: string
   lessons: Lesson[]
   quiz: QuizInfo
 }
@@ -50,7 +52,7 @@ export interface User {
   email: string
   avatar: string
   password: string
-  imageType: string
+  imageType: 'Default' | 'Dogs' | 'Cats' | 'Birds' | 'Bnnuy' | 'CatnBunny'
   bio?: string
   links?: string[]
 }
