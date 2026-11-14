@@ -9,7 +9,7 @@ export function getProgress(course: Course): number {
 
 export function formatDate(ts: number): string {
   const d = new Date(ts)
-  return d.getDate() + '/' + d.getMonth() + '/' + d.getFullYear()
+  return d.getDate() + '/' + (d.getMonth() + 1) + '/' + d.getFullYear()
 }
 
 interface DashboardProps {
