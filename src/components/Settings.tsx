@@ -31,7 +31,8 @@ export default function Settings({ user, setUser, setCourses }: SettingsProps) {
       prev.map((c) => ({
         ...c,
         enrolled: false,
-        lessons: c.lessons.map((l) => ({ ...l, completed: false })),
+        lessons: c.lessons.map((l) => ({ ...l, completed: false, completed_points: 0 })),
+        quiz: { ...c.quiz, completed_points: null },
       }))
     )
     setMessage("Courses purged!");
