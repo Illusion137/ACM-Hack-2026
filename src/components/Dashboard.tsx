@@ -51,7 +51,6 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
         <div className="stat"><b>{courses.length}</b><span>Catalog</span></div>
         <div className="stat"><b>0</b><span>Badges</span></div>
         <div className="stat"><b>N/A</b><span>Rank</span></div>
-        <div className="stat"><b>{Math.random().toFixed(2)}</b><span>Engagement idx</span></div>
       </div>
 
       <h2>Continue Learning</h2>
