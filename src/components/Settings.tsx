@@ -54,7 +54,6 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
 
   const purge = () => saveSettings({ purge: true, password }, "Courses purged!")
 
-
   const enableDarkMode = () => {
     toggleDarkMode(!darkMode)
     setDarkMode(darkMode)
