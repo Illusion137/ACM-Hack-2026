@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import type { CSSProperties } from 'react'
-import { announcements, distinct_colors } from '../data'
+import { distinct_colors } from '../data'
 import type { Course, User } from '../types'
 import { calculateGrade, isPastDue, selectImage } from '../utils'
 import { FaRegCircle } from 'react-icons/fa'
@@ -66,11 +66,12 @@ export function formatTime(time: number): string {
 
 interface DashboardProps {
   courses: Course[]
+  announcements: string[]
   openCourse: (id: number) => void
   user: User
 }
 
-export default function Dashboard({ courses, openCourse, user }: DashboardProps) {
+export default function Dashboard({ courses, announcements, openCourse, user }: DashboardProps) {
   const [now, setNow] = useState(new Date())
 
   useEffect(() => {

@@ -1,5 +1,4 @@
 import { useState, useEffect, useRef } from 'react'
-import { initialCourses } from './data'
 import Navbar from './components/Navbar'
 import Dashboard from './components/Dashboard'
 import Courses from './components/Courses'
@@ -10,7 +9,7 @@ import Settings from './components/Settings'
 import type { Course, Page } from './types'
 import Profile from './components/Profile'
 import TodoSidebar from './components/TodoSidebar'
-import { useAuth } from "./auth";
+import { apiRequest, useAuth } from "./auth";
 
 interface Route {
   page: Page
@@ -68,14 +67,18 @@ export default function App() {
   const { user: currentUser } = useAuth()
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash))
   const [courses, setCourses] = useState<Course[]>([])
+  const [announcements, setAnnouncements] = useState<string[]>([])
   const [user, setUser] = useState(currentUser!)
   const leave_guard = useRef<(() => boolean) | null>(null)
   const current_hash = useRef(toHash(route))
 
   useEffect(() => {
-    const timeout = setTimeout(() => {
-      setCourses(initialCourses)
-    }, 1500)
+    apiRequest<{ courses: Course[]; announcements: string[] }>('load-data')
+      .then((data) => {
+        setCourses(data.courses)
+        setAnnouncements(data.announcements)
+      })
+      .catch((err) => console.error(err))
 
     window.history.replaceState(null, '', current_hash.current)
 
@@ -92,7 +95,6 @@ export default function App() {
 
     window.addEventListener('popstate', handlePopState)
     return () => {
-      clearTimeout(timeout)
       window.removeEventListener('popstate', handlePopState)
     }
   }, [])
@@ -142,6 +144,9 @@ export default function App() {
 
   const recordQuizScore = (id: number, points: number) => {
     setCourses((prev) => prev.map((c) => c.id === id ? { ...c, quiz: { ...c.quiz, completed_points: points } } : c))
+    apiRequest<{ course: Course }>('quiz', { course: id, points })
+      .then(({ course }) => setCourses((prev) => prev.map((c) => c.id === course.id ? course : c)))
+      .catch((err) => console.error(err))
   }
 
   return (
@@ -151,7 +156,7 @@ export default function App() {
         {loading && <p className="faint">Loading…</p>}
         {page === 'dashboard' && (
           <div className="todo-layout">
-            <Dashboard courses={courses} openCourse={openCourse} user={user} />
+            <Dashboard courses={courses} announcements={announcements} openCourse={openCourse} user={user} />
             <TodoSidebar {...todo_props} />
           </div>
         )}

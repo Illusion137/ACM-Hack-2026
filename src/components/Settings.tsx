@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
-import type { SetCourses, User } from '../types'
-import { useAuth } from '../auth'
+import type { Course, SetCourses, User } from '../types'
+import { apiRequest, useAuth } from '../auth'
 import default_avatar from '../assets/default-avatar.svg'
 
 interface SettingsProps {
@@ -35,38 +35,24 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     setMessage("Avatar updated!");
   }
 
+  const saveSettings = async (body: object, success: string) => {
+    try {
+      const data = await apiRequest<{ user: User; courses: Course[] }>("settings", body);
+      setUser(data.user);
+      setCourses(data.courses);
+      setMessage(success);
+    } catch (err) {
+      setMessage(err instanceof Error ? err.message : "Something went wrong");
+    }
+  }
+
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    if (password == user.password)
-    {
-      setUser({ name: name, email: email, avatar: user.avatar, password: user.password, darkmode: darkMode, imageType: imageType });
-      setMessage("Profile updated!");
-    }
-    else
-    {
-      setMessage("Incorrect password!");
-    }
+    saveSettings({ name, email, password, darkmode: darkMode, imageType }, "Profile updated!");
   }
 
 
-  const purge = () => {
-    if (password == user.password)
-    {
-      setCourses((prev) =>
-        prev.map((c) => ({
-          ...c,
-          enrolled: false,
-          lessons: c.lessons.map((l) => ({ ...l, completed: false, completed_points: 0 })),
-          quiz: { ...c.quiz, completed_points: null },
-        }))
-      )
-      setMessage("Courses purged!");
-    }
-    else
-    {
-      setMessage("Incorrect password!");
-    }
-  }
+  const purge = () => saveSettings({ purge: true, password }, "Courses purged!")
 
 
   const enableDarkMode = () => {

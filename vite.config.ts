@@ -3,16 +3,21 @@ import fs from 'node:fs'
 import path from 'node:path'
 import { defineConfig, type Plugin } from 'vite'
 
-// for serving avatars in local env
-const uploads_dir = path.resolve(__dirname, 'server/uploads')
+// for serving avatars and course images in local env
+const static_dirs: Record<string, string> = {
+  '/avatars': path.resolve(__dirname, 'server/uploads'),
+  '/course-images': path.resolve(__dirname, 'server/assets'),
+}
 const avatars: Plugin = {
   name: 'avatars',
   configureServer(server) {
-    server.middlewares.use('/avatars', (req, res, next) => {
-      const file = path.join(uploads_dir, path.basename(decodeURIComponent(req.url ?? '')))
-      if (!fs.existsSync(file)) return next()
-      fs.createReadStream(file).pipe(res)
-    })
+    for (const [prefix, dir] of Object.entries(static_dirs)) {
+      server.middlewares.use(prefix, (req, res, next) => {
+        const file = path.join(dir, path.basename(decodeURIComponent(req.url ?? '')))
+        if (!fs.existsSync(file)) return next()
+        fs.createReadStream(file).pipe(res)
+      })
+    }
   },
 }
 

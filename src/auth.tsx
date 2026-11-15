@@ -2,7 +2,7 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { Navigate } from 'react-router-dom'
 import type { User } from './types'
 
-async function request(path: string, body?: unknown): Promise<User | null> {
+export async function apiRequest<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`/api/${path}`, {
     method: body === undefined ? 'GET' : 'POST',
     credentials: 'same-origin',
@@ -11,6 +11,11 @@ async function request(path: string, body?: unknown): Promise<User | null> {
   })
   const data = await res.json().catch(() => ({}))
   if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`)
+  return data as T
+}
+
+async function request(path: string, body?: unknown): Promise<User | null> {
+  const data = await apiRequest<{ user?: User }>(path, body)
   return data.user ?? null
 }
 
