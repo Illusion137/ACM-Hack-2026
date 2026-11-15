@@ -1,6 +1,7 @@
 # LearnHub
 
 A small learning management system (LMS) built with Vite + React and a Flask + MongoDB API.
+Deployed at https://learn.sumii.me/
 
 ## Running locally
 
