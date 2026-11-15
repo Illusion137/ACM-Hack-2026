@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState } from 'react'
 import type { CSSProperties } from 'react'
 import { distinct_colors } from '../data'
 import type { Course, User } from '../types'
@@ -72,15 +72,6 @@ interface DashboardProps {
 }
 
 export default function Dashboard({ courses, announcements, openCourse, user }: DashboardProps) {
-  const [now, setNow] = useState(new Date())
-
-  useEffect(() => {
-    const interval = setInterval(() => {
-      setNow(new Date())
-    }, 1000);
-    return () => clearInterval(interval);
-  }, [])
-
   const enrolled = courses.filter((c) => c.enrolled)
 
   return (
@@ -101,7 +92,7 @@ export default function Dashboard({ courses, announcements, openCourse, user }: 
               </span>
             </div>
             <div className="card-body">
-              <h3 className="course-color" style={{ '--course': distinct_colors[i] } as CSSProperties}>{c.title}</h3>
+              <h3 className="course-color" style={{ '--course': distinct_colors[i % distinct_colors.length] } as CSSProperties}>{c.title}</h3>
               <p className="faint">Started {formatDate(c.startDate)}</p>
               <div className="bar">
                 <div className="bar-fill" style={{ width: getProgress(c) + '%' }} />

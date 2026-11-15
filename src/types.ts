@@ -55,6 +55,7 @@ export interface User {
   imageType: 'Default' | 'Dogs' | 'Cats' | 'Birds' | 'Bnnuy' | 'CatnBunny'
   bio?: string
   links?: string[]
+  planned?: string[]
 }
 
 // ISOString -> lesson.id

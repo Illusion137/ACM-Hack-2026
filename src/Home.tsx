@@ -68,6 +68,7 @@ export default function App() {
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash))
   const [courses, setCourses] = useState<Course[]>([])
   const [announcements, setAnnouncements] = useState<string[]>([])
+  const [load_error, setLoadError] = useState('')
   const [user, setUser] = useState(currentUser!)
   const leave_guard = useRef<(() => boolean) | null>(null)
   const current_hash = useRef(toHash(route))
@@ -78,7 +79,7 @@ export default function App() {
         setCourses(data.courses)
         setAnnouncements(data.announcements)
       })
-      .catch((err) => console.error(err))
+      .catch((err) => setLoadError(err.message))
 
     window.history.replaceState(null, '', current_hash.current)
 
@@ -113,17 +114,25 @@ export default function App() {
   const openQuiz = (id: number) => navigate({ page: 'quiz', id })
   const openModules = (id: number) => navigate({ page: 'detail', id, tab: 'modules' })
 
-  const [planned, setPlanned] = useState<Set<string>>(new Set())
-  const togglePlanned = (key: string) => setPlanned((prev) => {
-    const next = new Set(prev)
-    if (!next.delete(key)) next.add(key)
-    return next
-  })
+  const [planned, setPlanned] = useState<Set<string>>(() => new Set(currentUser!.planned))
+  const togglePlanned = (key: string) => {
+    const add = !planned.has(key)
+    setPlanned((prev) => {
+      const next = new Set(prev)
+      if (add) next.add(key)
+      else next.delete(key)
+      return next
+    })
+    apiRequest<{ planned: string[] }>('planned', { key, planned: add })
+      .then((data) => setPlanned(new Set(data.planned)))
+      .catch((err) => console.error(err))
+  }
   const todo_props = { courses, planned, togglePlanned, openCourse: openModules, openQuiz }
 
-  const selected = courses.find((c) => c.id === route.id)
+  // course pages and quizzes are only for enrolled courses
+  const selected = courses.find((c) => c.id === route.id && c.enrolled)
   const page = route.page
-  const loading = (page === 'detail' || page === 'quiz') && courses.length === 0
+  const loading = (page === 'detail' || page === 'quiz') && courses.length === 0 && !load_error
 
   const toggleDarkMode = (toggle: boolean) => {
     document.documentElement.setAttribute(
@@ -138,15 +147,32 @@ export default function App() {
     toggleDarkMode(user.darkmode)
   }, [user.darkmode])
 
+  // don't carry the theme over to the login page after logout
+  useEffect(() => () => {
+    document.documentElement.removeAttribute("data-theme")
+    document.documentElement.style.colorScheme = ""
+  }, [])
+
   useEffect(() => {
     document.title = pageTitle(route, selected)
   }, [route, selected])
 
-  const recordQuizScore = (id: number, points: number) => {
+  const setQuizPoints = (id: number, points: number | null) =>
     setCourses((prev) => prev.map((c) => c.id === id ? { ...c, quiz: { ...c.quiz, completed_points: points } } : c))
-    apiRequest<{ course: Course }>('quiz', { course: id, points })
+
+  const recordQuizScore = (id: number, answers: number[]) => {
+    const quiz = courses.find((c) => c.id === id)?.quiz
+    if (!quiz) return
+    // the server scores the answers and keeps the best attempt; mirror that until it replies
+    const score = quiz.questions.reduce((sum, q, i) => sum + (answers[i] === q.answer ? q.points : 0), 0)
+    const previous = quiz.completed_points
+    setQuizPoints(id, previous === null ? score : Math.max(previous, score))
+    apiRequest<{ course: Course }>('quiz', { course: id, answers })
       .then(({ course }) => setCourses((prev) => prev.map((c) => c.id === course.id ? course : c)))
-      .catch((err) => console.error(err))
+      .catch((err) => {
+        setQuizPoints(id, previous)
+        console.error(err)
+      })
   }
 
   return (
@@ -181,12 +207,13 @@ export default function App() {
           <Quiz
             key={selected.id}
             course={selected}
-            on_score={(points) => recordQuizScore(selected.id, points)}
+            on_score={(answers) => recordQuizScore(selected.id, answers)}
             set_leave_guard={(guard) => { leave_guard.current = guard }}
           />
         )}
-        {(page === 'detail' || page === 'quiz') && !loading && !selected && (
-          <p className="faint">Course not found.</p>
+        {load_error && <p className="error">Couldn't load your courses: {load_error}</p>}
+        {(page === 'detail' || page === 'quiz') && !loading && !load_error && !selected && (
+          <p className="faint">Course not found, or you aren't enrolled in it.</p>
         )}
         {page === 'settings' && <Settings user={user} setUser={setUser} setCourses={setCourses} setDarkMode={toggleDarkMode} />}
         {page === 'profile' && <Profile user={user} courses={courses} />}

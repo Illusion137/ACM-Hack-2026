@@ -14,8 +14,8 @@ const avatars: Plugin = {
     for (const [prefix, dir] of Object.entries(static_dirs)) {
       server.middlewares.use(prefix, (req, res, next) => {
         const file = path.join(dir, path.basename(decodeURIComponent(req.url ?? '')))
-        if (!fs.existsSync(file)) return next()
-        fs.createReadStream(file).pipe(res)
+        if (!fs.statSync(file, { throwIfNoEntry: false })?.isFile()) return next()
+        fs.createReadStream(file).on('error', next).pipe(res)
       })
     }
   },

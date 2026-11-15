@@ -73,7 +73,7 @@ function Tasks(props: { course: Course; on_play: (lesson: Lesson) => void; openQ
           <span className="course-meta">
             {props.course.quiz.completed_points === null
               ? `Due ${formatDay(new Date(props.course.quiz.due))}`
-              : `Last score ${props.course.quiz.completed_points} / ${props.course.quiz.questions.reduce((sum, q) => sum + q.points, 0)}`}
+              : `Best score ${props.course.quiz.completed_points} / ${props.course.quiz.questions.reduce((sum, q) => sum + q.points, 0)}`}
           </span>
           <button className="course-play" onClick={() => props.openQuiz(props.course.id)}>
             {props.course.quiz.completed_points === null ? 'Take quiz' : 'Retake quiz'}

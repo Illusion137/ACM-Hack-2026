@@ -2,6 +2,12 @@ import { createContext, useContext, useEffect, useState, type ReactNode } from '
 import { Navigate } from 'react-router-dom'
 import type { User } from './types'
 
+const SESSION_EXPIRED = 'session-expired'
+
+export function expireSession() {
+  window.dispatchEvent(new Event(SESSION_EXPIRED))
+}
+
 export async function apiRequest<T>(path: string, body?: unknown): Promise<T> {
   const res = await fetch(`/api/${path}`, {
     method: body === undefined ? 'GET' : 'POST',
@@ -10,6 +16,7 @@ export async function apiRequest<T>(path: string, body?: unknown): Promise<T> {
     body: body === undefined ? undefined : JSON.stringify(body),
   })
   const data = await res.json().catch(() => ({}))
+  if (res.status === 401 && path !== 'login') expireSession()
   if (!res.ok) throw new Error(data.error ?? `Request failed (${res.status})`)
   return data as T
 }
@@ -38,6 +45,10 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       .then(setUser)
       .catch(() => setUser(null))
       .finally(() => setLoading(false))
+
+    const on_expired = () => setUser(null)
+    window.addEventListener(SESSION_EXPIRED, on_expired)
+    return () => window.removeEventListener(SESSION_EXPIRED, on_expired)
   }, [])
 
   const value: AuthState = {
