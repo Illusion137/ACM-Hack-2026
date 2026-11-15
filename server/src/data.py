@@ -1,39 +1,37 @@
-from PIL import Image
-
-bird1 = Image("./assets/bird1.webp")
-bird2 = Image("./assets/bird2.webp")
-bird3 = Image("./assets/bird3.webp")
-bird4 = Image("./assets/bird4.webp")
-bird5 = Image("./assets/bird5.webp")
-bird6 = Image("./assets/bird6.webp")
-bunny1 = Image("./assets/bunny1.webp")
-bunny2 = Image("./assets/bunny2.webp")
-bunny3 = Image("./assets/bunny3.webp")
-bunny4 = Image("./assets/bunny4.webp")
-bunny5 = Image("./assets/bunny5.webp")
-bunny7 = Image("./assets/bunny7.webp")
-bunny8 = Image("./assets/bunny8.webp")
-bunny6 = Image("./assets/bunny6.webp")
-cat1 = Image("./assets/cat1.webp")
-cat2 = Image("./assets/cat2.webp")
-cat3 = Image("./assets/cat3.webp")
-cat4 = Image("./assets/cat4.webp")
-cat5 = Image("./assets/cat5.webp")
-cat6 = Image("./assets/cat6.webp")
-cat7 = Image("./assets/cat7.webp")
-cat8 = Image("./assets/cat8.webp")
-dog1 = Image("./assets/dog1.webp")
-dog2 = Image("./assets/dog2.webp")
-dog3 = Image("./assets/dog3.webp")
-dog4 = Image("./assets/dog4.webp")
-dog5 = Image("./assets/dog5.webp")
-dog6 = Image("./assets/dog6.webp")
-image1 = Image("./assets/image1.webp")
-image2 = Image("./assets/image2.webp")
-image3 = Image("./assets/image3.webp")
-image5 = Image("./assets/image5.webp")
-image4 = Image("./assets/image4.svg")
-image6 = Image("./assets/image6.svg")
+bird1 = "/course-images/bird1.webp"
+bird2 = "/course-images/bird2.webp"
+bird3 = "/course-images/bird3.webp"
+bird4 = "/course-images/bird4.webp"
+bird5 = "/course-images/bird5.webp"
+bird6 = "/course-images/bird6.webp"
+bunny1 = "/course-images/bunny1.webp"
+bunny2 = "/course-images/bunny2.webp"
+bunny3 = "/course-images/bunny3.webp"
+bunny4 = "/course-images/bunny4.webp"
+bunny5 = "/course-images/bunny5.webp"
+bunny7 = "/course-images/bunny7.webp"
+bunny8 = "/course-images/bunny8.webp"
+bunny6 = "/course-images/bunny6.webp"
+cat1 = "/course-images/cat1.webp"
+cat2 = "/course-images/cat2.webp"
+cat3 = "/course-images/cat3.webp"
+cat4 = "/course-images/cat4.webp"
+cat5 = "/course-images/cat5.webp"
+cat6 = "/course-images/cat6.webp"
+cat7 = "/course-images/cat7.webp"
+cat8 = "/course-images/cat8.webp"
+dog1 = "/course-images/dog1.webp"
+dog2 = "/course-images/dog2.webp"
+dog3 = "/course-images/dog3.webp"
+dog4 = "/course-images/dog4.webp"
+dog5 = "/course-images/dog5.webp"
+dog6 = "/course-images/dog6.webp"
+image1 = "/course-images/image1.webp"
+image2 = "/course-images/image2.webp"
+image3 = "/course-images/image3.webp"
+image5 = "/course-images/image5.webp"
+image4 = "/course-images/image4.svg"
+image6 = "/course-images/image6.svg"
 
 QUIZ_INSTRUCTIONS = 'Answer each multiple-choice question below. Your answers are kept as you go, and you can jump to any question from the sidebar. Submit when you are done to see your score and the correct answers.'
 
@@ -419,4 +417,12 @@ courses = [
       ],
     },
   }
+]
+
+announcements = [
+    "📢 System maintenance scheduled — check back later",
+    "🎉 New courses added this month!",
+    "⚠️ Reminder: complete your profile",
+    "🔥 Limited-time: 3 new badges available",
+    "📅 Office hours moved",
 ]

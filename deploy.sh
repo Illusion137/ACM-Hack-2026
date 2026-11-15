@@ -7,6 +7,7 @@ SECRETS_FILE="$INTERLUDE_DIR/.secrets"
 DOMAIN="learn.sumii.me"
 WEB_DIR="/var/www/$DOMAIN/html"
 API_DIR="/srv/learnhub/api"
+ASSETS_DIR="/srv/learnhub/assets"
 SERVER_SRC="$ROOT/server/src"
 
 SKIP_TYPECHECK=false
@@ -64,6 +65,8 @@ if [[ "$DEPLOY_API" == true ]]; then
   if [[ -f "$ROOT/server/requirements.txt" ]]; then
     rsync -az -e "ssh ${SSH_OPTS[*]}" "$ROOT/server/requirements.txt" "$TARGET:$API_DIR/requirements.txt"
   fi
+  remote "mkdir -p $ASSETS_DIR"
+  sync "$ROOT/server/assets/" "$TARGET:$ASSETS_DIR/"
   remote "set -e
     cd $API_DIR
     [ -d .venv ] || python3 -m venv .venv

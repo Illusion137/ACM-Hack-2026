@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react'
 import { FaCheckCircle, FaClipboardList, FaPlay, FaRegCircle, FaRedo } from 'react-icons/fa'
 import { getProgress } from './Dashboard'
 import { calculateGrade, isPastDue } from '../utils'
+import { apiRequest } from '../auth'
 import Snake from './minigames/Snake'
 import Minesweeper from './minigames/Minesweeper'
 import type { Course, Lesson, SetCourses, TentativeSchedule } from '../types'
@@ -256,10 +257,9 @@ export default function CourseDetail({ course, setCourses, openQuiz, tab, setTab
   const [playing, setPlaying] = useState<Lesson | null>(null)
 
   const completeLesson = (lesson_id: number) => {
-    setCourses((prev) => prev.map((c) => c.id !== course.id ? c : {
-      ...c,
-      lessons: c.lessons.map((l) => l.id === lesson_id ? { ...l, completed: true, completed_points: l.points } : l),
-    }))
+    apiRequest<{ course: Course }>('lesson', { course: course.id, lesson: lesson_id })
+      .then(({ course: updated }) => setCourses((prev) => prev.map((c) => c.id === updated.id ? updated : c)))
+      .catch((err) => alert(err.message))
   }
 
   return (

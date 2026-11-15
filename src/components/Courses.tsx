@@ -3,6 +3,7 @@ import type { CSSProperties } from 'react'
 import type { User, Course, SetCourses } from '../types'
 import { distinct_colors } from '../data'
 import { selectImage } from '../utils'
+import { apiRequest } from '../auth'
 
 interface CoursesProps {
   courses: Course[]
@@ -26,25 +27,14 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
     if(!c.enrolled) handleOpen();
   }
 
-  const enroll = (course: Course) => {
-    setCourses(prev =>
-      prev.map(c =>
-        c.id === course.id
-          ? { ...c, enrolled: true }
-          : c
-      )
-    )
+  const setEnrolled = (course: Course, enrolled: boolean) => {
+    apiRequest<{ course: Course }>(enrolled ? 'enroll' : 'unenroll', { course: course.id })
+      .then(({ course: updated }) => setCourses(prev => prev.map(c => c.id === updated.id ? updated : c)))
+      .catch((err) => alert(err.message))
   }
 
-  const unenroll = (course: Course) => {
-     setCourses(prev =>
-      prev.map(c =>
-        c.id === course.id
-          ? { ...c, enrolled: false }
-          : c
-      )
-    )
-  }
+  const enroll = (course: Course) => setEnrolled(course, true)
+  const unenroll = (course: Course) => setEnrolled(course, false)
 
   const handleClick = () => {
     setButtonText(buttonText === 'Show Enrolled Only' ? 'Show All Courses' : 'Show Enrolled Only');

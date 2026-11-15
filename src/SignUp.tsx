@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import {users} from "./data.ts"
+import { useAuth } from "./auth"
 import {useNavigate} from "react-router-dom";
 
 export default function SignUp() {
@@ -11,9 +11,12 @@ export default function SignUp() {
   const [newMessage, setNewMessage] = useState("")
 
   const navigate = useNavigate();
+  const { signup } = useAuth();
 
-  const save = (e: FormEvent<HTMLFormElement>) => {
+  const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setMessage("");
+    setNewMessage("");
     if (password != confirmPassword)
     {
         setMessage("Passwords do not match.");
@@ -24,8 +27,12 @@ export default function SignUp() {
     }
     else
     {
-        users.push({name: name, darkmode: false, imageType: "Default", email: email, password: password, avatar: "src/assets/cat1.webp"});
-        navigate("/home", { state: { currentUser: users[users.length - 1] } });
+        try {
+            await signup(name, email, password);
+            navigate("/home");
+        } catch (err) {
+            setMessage(err instanceof Error ? err.message : "Sign up failed.");
+        }
     }
   }
 
@@ -77,7 +84,7 @@ export default function SignUp() {
         <input type="password" onChange={(e) => setConfirmPassword(e.target.value)} placeholder="Confirm password:" />
         {message && <p className="error">{message}</p>}
         <div className="row">
-          <button className="btn-a" onClick={() => navigate("/signup")}>Create Account</button>
+          <button className="btn-a" type="submit">Create Account</button>
         </div>
       </form>
     </main>

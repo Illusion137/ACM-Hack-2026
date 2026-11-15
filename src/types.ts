@@ -52,7 +52,6 @@ export interface User {
   email: string
   darkmode: boolean
   avatar: string;
-  password: string
   imageType: 'Default' | 'Dogs' | 'Cats' | 'Birds' | 'Bnnuy' | 'CatnBunny'
   bio?: string
   links?: string[]

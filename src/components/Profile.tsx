@@ -1,5 +1,6 @@
 import { getProgress } from './Dashboard'
 import type { Course, User } from '../types'
+import default_avatar from '../assets/default-avatar.svg'
 
 export default function Profile(props: { user: User; courses: Course[] }) {
   const { user } = props
@@ -9,7 +10,7 @@ export default function Profile(props: { user: User; courses: Course[] }) {
     <div className="profile-page">
       <h1>User Profile</h1>
       <div className="profile-layout">
-        <img src={user.avatar} alt={`${user.name}'s profile picture`} className="profile-avatar" />
+        <img src={user.avatar || default_avatar} alt={`${user.name}'s profile picture`} className="profile-avatar" />
 
         <div className="profile-details">
           <h2 className="profile-name">{user.name}</h2>
