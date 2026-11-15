@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import {users} from "./data.ts"
+import { useAuth } from "./auth"
 import {useNavigate} from "react-router-dom";
 
 export default function Login() {
@@ -8,19 +8,14 @@ export default function Login() {
   const [message, setMessage] = useState("")
 
   const navigate = useNavigate();
+  const { login } = useAuth();
 
-  const save = (e: FormEvent<HTMLFormElement>) => {
-    var loggedIn = false;
+  const save = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    users.forEach((user) => {
-        if (email == user.email && password == user.password)
-        {
-            loggedIn = true;
-            navigate("/home", { state: { currentUser: user } });
-        }
-    })
-    if (!loggedIn)
-    {
+    try {
+        await login(email, password);
+        navigate("/home");
+    } catch {
         setMessage("Login attempt failed - email or password is incorrect.");
     }
   }

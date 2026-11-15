@@ -1,5 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import type { SetCourses, User } from '../types'
+import { useAuth } from '../auth'
 
 interface SettingsProps {
   user: User
@@ -15,8 +16,7 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
   const [password, setPassword] = useState("")
   const [message, setMessage] = useState('')
   const [darkMode, toggleDarkMode] = useState(user.darkmode);
-
-
+  const { logout } = useAuth();
 
   const save = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -82,6 +82,7 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
         <div className="row">
           <button className="btn-a" type="submit">Save</button>
           <button className="btn-a" type="button" onClick={purge}>Purge</button>
+          <button className="btn-a" type="button" onClick={logout}>Log out</button>
         </div>
       </form>
     </div>

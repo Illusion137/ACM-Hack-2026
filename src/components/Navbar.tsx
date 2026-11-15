@@ -1,4 +1,5 @@
 import { FaBook, FaClipboardList, FaCog, FaHome } from 'react-icons/fa'
+import default_avatar from '../assets/default-avatar.svg'
 import type { Page, User } from '../types'
 interface NavbarProps {
   setPage: (page: Page) => void
@@ -16,7 +17,7 @@ export default function Navbar({ setPage, user }: NavbarProps) {
         <button className="nav-item" title="Settings" aria-label="Settings" onClick={() => setPage('settings')}><FaCog /></button>
       </div>
       <div className="nav-user clickable" onClick={() => setPage('profile')}>
-        <img src={user.avatar} className="avatar" />
+        <img src={user.avatar || default_avatar} className="avatar" />
         <span>{user.name}</span>
       </div>
     </nav>

@@ -10,7 +10,7 @@ import Settings from './components/Settings'
 import type { Course, Page } from './types'
 import Profile from './components/Profile'
 import TodoSidebar from './components/TodoSidebar'
-import {useLocation} from "react-router-dom";
+import { useAuth } from "./auth";
 
 interface Route {
   page: Page
@@ -65,11 +65,10 @@ function parseHash(hash: string): Route {
 }
 
 export default function App() {
-  const {state} = useLocation();
-  const { currentUser } = state;
+  const { user: currentUser } = useAuth()
   const [route, setRoute] = useState<Route>(() => parseHash(window.location.hash))
   const [courses, setCourses] = useState<Course[]>([])
-  const [user, setUser] = useState(currentUser)
+  const [user, setUser] = useState(currentUser!)
   const leave_guard = useRef<(() => boolean) | null>(null)
   const current_hash = useRef(toHash(route))
 

@@ -1,17 +1,21 @@
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
+import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Home'
 import Login from './Login'
+import { AuthProvider, RequireAuth } from './auth'
 
 export default function App() {
 
   return (
+    <AuthProvider>
     <Router>
     <div className="app">
       <Routes>
-        <Route path="/" element={<Login />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/" element={<RequireAuth guest><Login /></RequireAuth>} />
+        <Route path="/home" element={<RequireAuth><Home /></RequireAuth>} />
+        <Route path="*" element={<Navigate to="/" replace />} />
       </Routes>
     </div>
     </Router>
+    </AuthProvider>
   )
 }
