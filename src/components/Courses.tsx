@@ -18,9 +18,14 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
 
   const [buttonText, setButtonText] = useState('Show Enrolled Only');
 
+  const enrolled_only = buttonText === 'Show All Courses'
+  const search = query.trim().toLowerCase()
   const filtered = courses.filter(
-    (c) => c.title.includes(query) && ((category === 'All' && buttonText === 'Show Enrolled Only') || c.category === category || buttonText === 'Show All Courses' && c.enrolled)
+    (c) => c.title.toLowerCase().includes(search)
+      && (category === 'All' || c.category === category)
+      && (!enrolled_only || c.enrolled)
   )
+  const colorOf = (c: Course) => distinct_colors[courses.indexOf(c) % distinct_colors.length]
 
   const on_click = (c: Course) => {
     if(c.enrolled) openCourse(c.id);
@@ -73,12 +78,12 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
       {filtered.length === 0 && <p className="faint">0 results.</p>}
 
       <div className="grid">
-        {filtered.map((c, i) => (
-          <div className="card">
+        {filtered.map((c) => (
+          <div key={c.id} className="card">
             <img src={selectImage(c, user)} onClick={() => on_click(c)} />
             <div className="card-body">
               <p className="code">{c.code}</p>
-              <h3 className="course-color" style={{ '--course': distinct_colors[i] } as CSSProperties} onClick={() => on_click(c)}>{c.title}</h3>
+              <h3 className="course-color" style={{ '--course': colorOf(c) } as CSSProperties} onClick={() => on_click(c)}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
                 <button className="btn-unenroll" onClick={() => unenroll(c)}>Unenroll</button>

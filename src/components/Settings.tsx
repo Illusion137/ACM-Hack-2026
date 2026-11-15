@@ -1,6 +1,6 @@
 import { useState, type ChangeEvent, type FormEvent } from 'react'
 import type { Course, SetCourses, User } from '../types'
-import { apiRequest, useAuth } from '../auth'
+import { apiRequest, expireSession, useAuth } from '../auth'
 import default_avatar from '../assets/default-avatar.svg'
 
 interface SettingsProps {
@@ -27,6 +27,7 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
     body.append("image", file);
     const res = await fetch("/api/upload-avatar", { method: "POST", credentials: "same-origin", body });
     const data = await res.json().catch(() => ({}));
+    if (res.status === 401) expireSession();
     if (!res.ok) {
       setMessage(data.error ?? (res.status === 413 ? "Image must be under 5 MB" : "Upload failed"));
       return;
@@ -55,8 +56,10 @@ export default function Settings({ user, setUser, setCourses, setDarkMode}: Sett
   const purge = () => saveSettings({ purge: true, password }, "Courses purged!")
 
   const enableDarkMode = () => {
-    toggleDarkMode(!darkMode)
-    setDarkMode(darkMode)
+    const next = !darkMode
+    toggleDarkMode(next)
+    setDarkMode(next)
+    saveSettings({ darkmode: next }, "Theme saved!")
   }
 
   return (

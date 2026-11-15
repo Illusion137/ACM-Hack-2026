@@ -15,8 +15,8 @@ export default function Login() {
     try {
         await login(email, password);
         navigate("/home");
-    } catch {
-        setMessage("Login attempt failed - email or password is incorrect.");
+    } catch (err) {
+        setMessage(err instanceof Error ? err.message : "Login failed.");
     }
   }
 

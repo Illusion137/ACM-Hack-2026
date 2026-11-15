@@ -1,5 +1,6 @@
 import copy
 import os
+import re
 import uuid
 from datetime import timedelta
 
@@ -10,6 +11,7 @@ from flask_login import (
 )
 from bson.objectid import ObjectId
 from pymongo import MongoClient
+from pymongo.errors import DuplicateKeyError
 from werkzeug.security import generate_password_hash, check_password_hash
 import data as course_data
 
@@ -46,6 +48,8 @@ UPLOAD_DIR = os.environ.get(
 AVATAR_URL_PREFIX = "/avatars/"
 MAX_AVATAR_BYTES = 5 * 1024 * 1024
 IMAGE_TYPES = {"Default", "Dogs", "Cats", "Birds", "Bnnuy", "CatnBunny"}
+PLANNED_KEY = re.compile(r"\d+:(lesson|quiz):\d+")
+EMAIL_TAKEN = "An account with that email already exists"
 
 def image_extension(data):
     if data.startswith(b"\x89PNG\r\n\x1a\n"):
@@ -62,7 +66,7 @@ def image_extension(data):
 '''
     Data format:
 
-    {_id, name, email, password, avatar, darkmode, imageType, bio, links, courses = {
+    {_id, name, email, password, avatar, darkmode, imageType, bio, links, planned, courses = {
         "<course id>": {quiz_score, completed_lessons = {"<lesson id>": points}}
     }}
 
@@ -74,12 +78,7 @@ def default_progress():
     progress = {}
     for course in course_data.courses:
         if course.get("enrolled"):
-            progress[str(course["id"])] = {
-                "quiz_score": course["quiz"].get("completed_points"),
-                "completed_lessons": {
-                    str(l["id"]): l["completed_points"] for l in course["lessons"] if l.get("completed")
-                },
-            }
+            progress[str(course["id"])] = {"quiz_score": None, "completed_lessons": {}}
     return progress
 
 
@@ -134,6 +133,7 @@ class User(UserMixin):
             "imageType": self.data.get("imageType", "Default"),
             "bio": self.data.get("bio"),
             "links": self.data.get("links", []),
+            "planned": self.data.get("planned", []),
         }
 
 
@@ -174,7 +174,7 @@ def signup():
         return jsonify({"error": f"Password must be at least {MIN_PASSWORD_LENGTH} characters"}), 400
 
     if users.find_one({"email": email}):
-        return jsonify({"error": "An account with that email already exists"}), 409
+        return jsonify({"error": EMAIL_TAKEN}), 409
 
     user_data = {
         "name": name,
@@ -185,7 +185,10 @@ def signup():
         "imageType": "Default",
         "courses": default_progress(),
     }
-    user_data["_id"] = users.insert_one(user_data).inserted_id
+    try:
+        user_data["_id"] = users.insert_one(user_data).inserted_id
+    except DuplicateKeyError:
+        return jsonify({"error": EMAIL_TAKEN}), 409
 
     user = User(user_data)
     login_user(user, remember=True)
@@ -256,15 +259,20 @@ def quiz():
     if str(course["id"]) not in user_progress(current_user.data):
         return jsonify({"error": "Not enrolled in this course"}), 403
 
-    max_points = sum(q["points"] for q in course["quiz"]["questions"])
-    try:
-        points = max(0, min(int(data.get("points", 0)), max_points))
-    except (TypeError, ValueError):
-        return jsonify({"error": "Points must be a number"}), 400
+    answers = data.get("answers")
+    if not isinstance(answers, list):
+        return jsonify({"error": "Answers must be a list"}), 400
+    # score server-side so clients can't post arbitrary points
+    points = sum(
+        q["points"] for q, a in zip(course["quiz"]["questions"], answers)
+        if type(a) is int and a == q["answer"]
+    )
 
+    # keep the best attempt
+    field = f"courses.{course['id']}.quiz_score"
     users.update_one(
-        {"_id": ObjectId(current_user.id)},
-        {"$set": {f"courses.{course['id']}.quiz_score": points}}
+        {"_id": ObjectId(current_user.id), "$or": [{field: None}, {field: {"$lt": points}}]},
+        {"$set": {field: points}}
     )
     return course_response(course["id"])
 
@@ -297,7 +305,7 @@ def settings():
             return jsonify({"error": "Email is required"}), 400
         if email != current_user.data.get("email"):
             if users.find_one({"email": email}):
-                return jsonify({"error": "An account with that email already exists"}), 409
+                return jsonify({"error": EMAIL_TAKEN}), 409
             updates["email"] = email
             needs_password = True
 
@@ -306,9 +314,13 @@ def settings():
 
     if data.get("purge"):
         updates["courses"] = {}
+        updates["planned"] = []
 
     if updates:
-        users.update_one({"_id": ObjectId(current_user.id)}, {"$set": updates})
+        try:
+            users.update_one({"_id": ObjectId(current_user.id)}, {"$set": updates})
+        except DuplicateKeyError:
+            return jsonify({"error": EMAIL_TAKEN}), 409
 
     user_data = users.find_one({"_id": ObjectId(current_user.id)})
     return jsonify({
@@ -343,6 +355,20 @@ def unenroll():
         {"$unset": {f"courses.{course['id']}": ""}}
     )
     return course_response(course["id"])
+
+
+@app.route("/api/planned", methods=['POST'])
+@login_required
+def planned():
+    data = request.get_json(silent=True) or {}
+    key = data.get("key")
+    if not isinstance(key, str) or not PLANNED_KEY.fullmatch(key):
+        return jsonify({"error": "Invalid to-do item"}), 400
+
+    op = "$addToSet" if data.get("planned") else "$pull"
+    users.update_one({"_id": ObjectId(current_user.id)}, {op: {"planned": key}})
+    user_data = users.find_one({"_id": ObjectId(current_user.id)}, {"planned": 1})
+    return jsonify({"planned": user_data.get("planned", [])})
 
 
 @app.route("/api/upload-avatar", methods=["POST"])

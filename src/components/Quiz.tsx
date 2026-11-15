@@ -334,7 +334,7 @@ export function QuizList({ courses, openQuiz }: QuizListProps) {
 
 interface QuizProps {
   course: Course
-  on_score: (points: number) => void
+  on_score: (answers: number[]) => void
   set_leave_guard: (guard: (() => boolean) | null) => void
 }
 
@@ -398,7 +398,7 @@ export default function Quiz({ course, on_score, set_leave_guard }: QuizProps) {
   }, [caught, submitted_at, quiz.questions])
 
   useEffect(() => {
-    if (submitted_at) on_score(score)
+    if (submitted_at) on_score(selected)
   }, [submitted_at])
 
   useEffect(() => {
@@ -409,7 +409,7 @@ export default function Quiz({ course, on_score, set_leave_guard }: QuizProps) {
       suppress_cheat_until.current = Infinity
       const leave = window.confirm('Leaving now will fail this quiz. Leave anyway?')
       suppress_cheat_until.current = Date.now() + CONFIRM_GRACE_MS
-      if (leave) on_score(0)
+      if (leave) on_score([])
       return leave
     })
     return () => {
