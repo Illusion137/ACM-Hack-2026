@@ -1,4 +1,5 @@
 import { useState } from 'react'
+import type { CSSProperties } from 'react'
 import type { User, Course, SetCourses } from '../types'
 import { distinct_colors } from '../data'
 import { selectImage } from '../utils'
@@ -21,7 +22,8 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
   )
 
   const on_click = (c: Course) => {
-    if(c.enrolled) openCourse(c.id)
+    if(c.enrolled) openCourse(c.id);
+    if(!c.enrolled) handleOpen();
   }
 
   const enroll = (course: Course) => {
@@ -86,15 +88,19 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
             <img src={selectImage(c, user)} onClick={() => on_click(c)} />
             <div className="card-body">
               <p className="code">{c.code}</p>
-              <h3 style={{color: distinct_colors[i]}} onClick={() => on_click(c)}>{c.title}</h3>
+              <h3 className="course-color" style={{ '--course': distinct_colors[i] } as CSSProperties} onClick={() => on_click(c)}>{c.title}</h3>
               <p className="faint">{c.instructor}</p>
               {c.enrolled ? (
-                <button className="btn-green" onClick={() => unenroll(c)}>Unenroll</button>
+                <button className="btn-unenroll" onClick={() => unenroll(c)}>Unenroll</button>
               ) : (
-                <button className="btn-b" onClick={() => enroll(c)}>Enroll</button>
+                <button className="btn-enroll" onClick={() => enroll(c)}>Enroll</button>
               )}
             </div>
-            {open?(
+            </div>
+        ))}
+      </div>
+
+      {open?(
               <div
                 onClick={handleClose}
                 style={{
@@ -124,9 +130,6 @@ export default function Courses({ courses, setCourses, openCourse, user }: Cours
               <h3>Enroll in the class to access course content!</h3>
             </div>
         </div>) : (null)}
-          </div>
-        ))}
-      </div>
     </div>
   )
 }

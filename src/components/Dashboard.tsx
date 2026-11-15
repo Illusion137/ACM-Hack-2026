@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react'
+import type { CSSProperties } from 'react'
 import { announcements, distinct_colors } from '../data'
 import type { Course, User } from '../types'
 import { calculateGrade, isPastDue, selectImage } from '../utils'
@@ -80,29 +81,11 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
   }, [])
 
   const enrolled = courses.filter((c) => c.enrolled)
-  const totalLessons = enrolled.reduce((sum, c) => sum + c.lessons.length, 0)
-  const doneLessons = enrolled.reduce((sum, c) => sum + c.lessons.filter((l) => l.completed).length, 0)
-  const points = enrolled.reduce(
-    (sum, c) => sum + c.lessons.reduce((s, l) => s + l.completed_points, 0),
-    0
-  )
 
   return (
     <div>
       <marquee className="announce">{announcements.join('   •   ')}</marquee>
       <h1>Welcome back, {user.name}!!!</h1>
-      <p className="faint">Current server time: {formatTime(now.getTime())}</p>
-
-      <div className="stats">
-        <div className="stat"><b>{enrolled.length}</b><span>Enrolled</span></div>
-        <div className="stat"><b>{totalLessons}</b><span>Lessons</span></div>
-        <div className="stat"><b>{doneLessons}</b><span>Done</span></div>
-        <div className="stat"><b>{points}</b><span>Points</span></div>
-        <div className="stat"><b>{totalLessons - doneLessons}</b><span>Remaining</span></div>
-        <div className="stat"><b>{courses.length}</b><span>Catalog</span></div>
-        <div className="stat"><b>0</b><span>Badges</span></div>
-        <div className="stat"><b>N/A</b><span>Rank</span></div>
-      </div>
 
       <h2>Continue Learning</h2>
       <div className="grid">
@@ -117,7 +100,7 @@ export default function Dashboard({ courses, openCourse, user }: DashboardProps)
               </span>
             </div>
             <div className="card-body">
-              <h3 style={{color: distinct_colors[i]}}>{c.title}</h3>
+              <h3 className="course-color" style={{ '--course': distinct_colors[i] } as CSSProperties}>{c.title}</h3>
               <p className="faint">Started {formatDate(c.startDate)}</p>
               <div className="bar">
                 <div className="bar-fill" style={{ width: getProgress(c) + '%' }} />
